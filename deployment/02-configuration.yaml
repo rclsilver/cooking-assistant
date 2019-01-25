@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cooking-assistant-config
+  namespace: __NAMESPACE__
+data:
+  DJANGO_ALLOWED_HOSTS: "__FQDN__"
+  DJANGO_DEBUG: "false"
+  DJANGO_LANGUAGE_CODE: "fr-fr"
+  DJANGO_TIME_ZONE: "Europe/Paris"
+  DJANGO_ENV: "__ENVIRONMENT__"
+  POSTGRES_HOST: "cooking-assistant-pgsql"
+  CELERY_BROKER_URL: "amqp://guest:guest@cooking-assistant-rabbitmq:5672//"
+---
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: cooking-assistant-pgsql
+  namespace: __NAMESPACE__
+data:
+  POSTGRES_DB: ZGphbmdv
+  POSTGRES_USER: ZGphbmdv
+  POSTGRES_PASSWORD: ZGphbmdv

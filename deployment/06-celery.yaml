@@ -1,0 +1,89 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: cooking-assistant-celery-worker
+  namespace: __NAMESPACE__
+  labels:
+    app: cooking-assistant
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: cooking-assistant
+      tier: celery-worker
+  template:
+    metadata:
+      labels:
+        app: cooking-assistant
+        tier: celery-worker
+    spec:
+      containers:
+      - image: __CONTAINER_IMAGE__
+        imagePullPolicy: Always
+        name: cooking-assistant-celery-worker
+        envFrom:
+        - configMapRef:
+            name: cooking-assistant-config
+        env:
+        - name: APP_TYPE
+          value: celery-worker
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: cooking-assistant-pgsql
+              key: POSTGRES_DB
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: cooking-assistant-pgsql
+              key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: cooking-assistant-pgsql
+              key: POSTGRES_PASSWORD
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: cooking-assistant-celery-beat
+  namespace: __NAMESPACE__
+  labels:
+    app: cooking-assistant
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cooking-assistant
+      tier: celery-beat
+  template:
+    metadata:
+      labels:
+        app: cooking-assistant
+        tier: celery-beat
+    spec:
+      containers:
+      - image: __CONTAINER_IMAGE__
+        imagePullPolicy: Always
+        name: cooking-assistant-celery-beat
+        envFrom:
+        - configMapRef:
+            name: cooking-assistant-config
+        env:
+        - name: APP_TYPE
+          value: celery-beat
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: cooking-assistant-pgsql
+              key: POSTGRES_DB
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: cooking-assistant-pgsql
+              key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: cooking-assistant-pgsql
+              key: POSTGRES_PASSWORD

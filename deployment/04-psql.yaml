@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: cooking-assistant-pgsql
+  namespace: __NAMESPACE__
+  labels:
+    app: cooking-assistant
+spec:
+  ports:
+    - port: 5432
+  selector:
+    app: cooking-assistant
+    tier: postgresql
+  clusterIP: None
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cooking-assistant-pgsql
+  namespace: __NAMESPACE__
+  labels:
+    app: cooking-assistant
+spec:
+  selector:
+    matchLabels:
+      app: cooking-assistant
+      tier: postgresql
+  template:
+    metadata:
+      labels:
+        app: cooking-assistant
+        tier: postgresql
+    spec:
+      containers:
+      - name: cooking-assistant-pgsql
+        image: postgres:10.4
+        imagePullPolicy: "IfNotPresent"
+        ports:
+          - containerPort: 5432
+        env:
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: cooking-assistant-pgsql
+              key: POSTGRES_DB
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: cooking-assistant-pgsql
+              key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: cooking-assistant-pgsql
+              key: POSTGRES_PASSWORD
+        volumeMounts:
+          - mountPath: /var/lib/postgresql
+            name: pgsql-data
+      volumes:
+        - name: pgsql-data
+          persistentVolumeClaim:
+            claimName: cooking-assistant-pgsql

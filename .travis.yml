@@ -1,0 +1,18 @@
+sudo: required
+services:
+- docker
+env:
+  global:
+  - IMAGE_NAME=rclsilver/cooking-assistant
+before_script:
+- version="$(awk '$2 == "COOKING_ASSISTANT_VERSION" { print $3; exit }' Dockerfile)"
+- docker pull "${IMAGE_NAME}" || true
+script:
+- docker build --pull --cache-from "${IMAGE_NAME}" --tag "${IMAGE_NAME}" .
+after_script:
+- docker images
+deploy:
+- provider: script
+  script: deployment/deploy.sh
+  on:
+    all_branches: true
