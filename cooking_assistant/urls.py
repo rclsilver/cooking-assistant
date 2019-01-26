@@ -19,4 +19,5 @@ from django.urls import path, include
 urlpatterns = [
     path('health/', include('health_check.urls')),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('api/', include('recipes.urls')),
 ]
