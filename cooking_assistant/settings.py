@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'health_check',
     'health_check.db',
     'rest_framework',
+    'recipes',
 ]
 
 MIDDLEWARE = [
@@ -84,20 +85,14 @@ WSGI_APPLICATION = 'cooking_assistant.wsgi.application'
 
 DATABASES = {}
 
-if os.getenv('POSTGRES_DB'):
-    DATABASES['default'] = {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('POSTGRES_DB'),
-        'USER': os.getenv('POSTGRES_USER'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
-        'HOST': os.getenv('POSTGRES_HOST'),
-        'PORT': os.getenv('POSTGRES_PORT'),
-    }
-else:
-    DATABASES['default'] = {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+DATABASES['default'] = {
+    'ENGINE': 'django.db.backends.postgresql',
+    'NAME': os.getenv('POSTGRES_DB', 'django'),
+    'USER': os.getenv('POSTGRES_USER', 'django'),
+    'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'django'),
+    'HOST': os.getenv('POSTGRES_HOST', 'localhost'),
+    'PORT': os.getenv('POSTGRES_PORT', 5432),
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
