@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 
+from celery.schedules import crontab
+from django.utils.log import DEFAULT_LOGGING
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -140,3 +143,40 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Celery
 CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'amqp://guest:guest@localhost:5672//')
+CELERY_BEAT_SCHEDULE = {
+    'parse-recipes': {
+        'task': 'recipes.tasks.parse_recipes',
+        'schedule': crontab(minute='*'),
+    },
+}
+
+
+# Logging settings
+# See https://docs.djangoproject.com/fr/2.1/topics/logging/
+LOGGING = DEFAULT_LOGGING
+
+LOGGING['formatters']['console'] = {
+    '()': 'colorlog.ColoredFormatter',
+    'format': '%(log_color)s%(asctime)s %(levelname)-8s %(message)s',
+    'log_colors': {
+        'DEBUG':    'bold_black',
+        'INFO':     'green',
+        'WARNING':  'yellow',
+        'ERROR':    'red',
+        'CRITICAL': 'bold_red',
+    },
+}
+
+LOGGING['handlers']['console']['formatter'] = 'console'
+
+if os.getenv('DJANGO_SHOW_SQL', 'false').lower() in ['true', '1']:
+    LOGGING['loggers']['django.db.backends'] = {
+        'handlers': ['console'],
+        'level': 'DEBUG',
+    }
+
+LOGGING['loggers'][''] = {
+    'handlers': ['console'],
+    'level': 'DEBUG' if DEBUG else 'INFO',
+    'propagate': True,
+}
