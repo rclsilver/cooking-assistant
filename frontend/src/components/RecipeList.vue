@@ -27,6 +27,7 @@
                   :class="`elevation-${hover ? 24 : 2}`" 
                   flat
                   tile
+                  :to="{name: 'recipe-details', params: { id: recipe.id }}"
                 >
                   <v-img
                     :aspect-ratio="16/9"
@@ -72,18 +73,22 @@
                   ></v-img>
                 </v-avatar>
               </template>
-              <v-hover>
-                <v-avatar 
-                  slot-scope="{ hover }"
-                  :class="`elevation-${hover ? 4 : 2}`"
-                  :title="recipe.title"
-                >
-                  <v-img
-                    :aspect-ratio="16/9"
-                    :src="recipe.picture_url"
-                  ></v-img>
-                </v-avatar>
-              </v-hover>
+              <a
+                :href="'/recipes/' + recipe.id"
+                :title="recipe.title"
+              >
+                <v-hover>
+                  <v-avatar 
+                    slot-scope="{ hover }"
+                    :class="`elevation-${hover ? 4 : 2}`"
+                  >
+                    <v-img
+                      :aspect-ratio="16/9"
+                      :src="recipe.picture_url"
+                    ></v-img>
+                  </v-avatar>
+                </v-hover>
+              </a>
             </drag>
           </v-flex>
         </template>
