@@ -13,6 +13,11 @@ export const router = new Router({
       component: () => import('@/views/Home.vue')
     },
     {
+      path: '/recipes',
+      name: 'recipe-list',
+      component: () => import('@/views/recipes/List.vue')
+    },
+    {
       path: '/about',
       name: 'about',
       component: () => import('@/views/About.vue')

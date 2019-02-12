@@ -6,6 +6,7 @@ import cookies from '@/plugins/cookies'
 import '@/plugins/drag-drop'
 import '@/plugins/confirm'
 import { store } from '@/store'
+import '@/filters'
 import api from '@/plugins/api'
 
 import App from '@/App.vue'

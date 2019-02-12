@@ -68,7 +68,13 @@
     data () {
       return {
         drawer: true,
-        items: []
+        items: [
+          {
+            icon: 'list',
+            title: 'Recipes',
+            to: { name: 'recipe-list' },
+          },
+        ]
       }
     }
   }
