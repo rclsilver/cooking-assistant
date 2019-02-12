@@ -6,6 +6,8 @@ import cookies from '@/plugins/cookies'
 import '@/plugins/drag-drop'
 import '@/plugins/confirm'
 import { store } from '@/store'
+import api from '@/plugins/api'
+
 import App from '@/App.vue'
 
 new Vue({
@@ -13,5 +15,6 @@ new Vue({
   resource,
   store,
   cookies,
+  api,
   render: h => h(App)
 }).$mount('#app')
