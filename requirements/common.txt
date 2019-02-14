@@ -10,3 +10,4 @@ requests==2.20.1
 colorlog==4.0.2
 django-webpack-loader==0.6.0
 Pillow==5.4.1
+djangorestframework-simplejwt==3.3

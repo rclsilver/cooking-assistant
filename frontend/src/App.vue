@@ -6,6 +6,7 @@
       v-model="drawer"
       app
       enable-resize-watcher
+      v-if="authentication.status.loggedIn"
     >
       <v-list dense class="pt-0">
         <v-list-tile to="/">
@@ -40,14 +41,24 @@
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
-    <v-toolbar app fixed clipped-left>
-      <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+    <v-toolbar 
+      app 
+      fixed 
+      clipped-left
+      v-if="authentication.status.loggedIn"
+    >
+      <v-toolbar-side-icon
+        @click.stop="drawer = !drawer"
+      >
+      </v-toolbar-side-icon>
       <v-toolbar-title>
         <v-avatar size="32">
           <img src="./assets/logo.png">
         </v-avatar>
         Cooking Assistant
       </v-toolbar-title>
+      <v-spacer></v-spacer>
+      <user-menu/>
     </v-toolbar>
     <v-content>
       <v-container fluid>
@@ -62,9 +73,29 @@
 </template>
 
 <script>
+  import UserMenu from '@/components/UserMenu.vue'
+
   export default {
     name: 'App',
-    components: {},
+    components: {
+      UserMenu
+    },
+    computed: {
+      alert () {
+        return this.$store.state.alert
+      },
+      authentication () {
+        return this.$store.state.authentication
+      }
+    },
+    watch: {
+      $route() {
+        this.$store.dispatch('alert/clear')
+      }
+    },
+    mounted: function() {
+      this.$store.dispatch('authentication/inspect')
+    },
     data () {
       return {
         drawer: true,

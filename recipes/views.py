@@ -32,6 +32,18 @@ class PictureMixin(object):
         return response
 
 
+class UserViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = get_user_model().objects.all()
+    serializer_class = serializers.UserSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_object(self):
+        if 'me' == self.kwargs['pk']:
+            return self.request.user
+        else:
+            return super(UserViewSet, self).get_object()
+
+
 class UnitViewSet(viewsets.ModelViewSet):
     queryset = models.Unit.objects.all()
     serializer_class = serializers.UnitSerializer

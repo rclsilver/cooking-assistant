@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "jwt-decode": "^2.2.0",
     "sass-loader": "^7.1.0",
     "vue": "^2.5.22",
     "vue-cookies": "^1.5.12",
