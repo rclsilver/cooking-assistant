@@ -1,9 +1,15 @@
 <template>
   <v-container>
+    <v-dialog v-model="formDialog" persistent max-width="600px">
+      <source-form :instance="sourceInstance" v-on:cancel="onFormCancel()" v-on:save="onFormSave($event)" />
+    </v-dialog>
     <v-card>
       <v-toolbar>
         <span class="headline">Sources</span>
         <v-spacer></v-spacer>
+        <v-btn icon @click.prevent.stop="showForm({})" title="Create source">
+          <v-icon>add</v-icon>
+        </v-btn>
         <v-btn icon @click.prevent.stop="refresh()" title="Refresh">
           <v-icon>refresh</v-icon>
         </v-btn>
@@ -110,12 +116,18 @@
 
 <script>
   import InfiniteLoader from '@/utils/infinite-loader'
+  import SourceForm from '@/components/SourceForm'
 
   export default {
+    components: {
+      SourceForm,
+    },
     data () {
       return {
         states: [0, 1, 2, 3, 4],
         loader: new InfiniteLoader(this.$api.sources.get, 40, {state: [1, 2, 3, 4].join(',')}),
+        sourceInstance: {},
+        formDialog: false,
       }
     },
     watch: {
@@ -156,6 +168,18 @@
             this.load()
           }
         }
+      },
+      showForm(instance) {
+        this.sourceInstance = instance
+        this.formDialog = true
+      },
+      onFormCancel() {
+        this.sourceInstance = {}
+        this.formDialog = false
+      },
+      onFormSave() {
+        this.onFormCancel()
+        this.refresh()
       }
     },
     mounted: function() {
