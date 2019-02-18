@@ -29,6 +29,11 @@ export const router = new Router({
       component: () => import('@/views/recipes/Details.vue')
     },
     {
+      path: '/sources',
+      name: 'source-list',
+      component: () => import('@/views/sources/List.vue')
+    },
+    {
       path: '/about',
       name: 'about',
       component: () => import('@/views/About.vue')

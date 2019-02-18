@@ -6,7 +6,9 @@ let API = {
     Vue.prototype.$api = {
         units: Vue.resource('/api/units{/id}'),
         ingredients: Vue.resource('/api/ingredients{/id}'),
-        sources: Vue.resource('/api/sources{/id}'),
+        sources: Vue.resource('/api/sources{/id}', {}, {
+          retry: { method: 'POST', url: '/api/sources{/id}/retry' },
+        }),
         recipes: Vue.resource('/api/recipes{/id}'),
         users: Vue.resource('/api/users{/id}'),
     }

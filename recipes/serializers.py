@@ -47,6 +47,10 @@ class RequiredIngredientSerializer(serializers.ModelSerializer):
 
 class SourceSerializer(serializers.ModelSerializer):
     author = UserSerializer(read_only=True)
+    recipes = serializers.SerializerMethodField()
+
+    def get_recipes(self, obj):
+        return obj.recipes.count()
 
     class Meta:
         model = models.Source

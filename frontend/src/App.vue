@@ -105,6 +105,11 @@
             title: 'Recipes',
             to: { name: 'recipe-list' },
           },
+          {
+            icon: 'cloud',
+            title: 'Sources',
+            to: { name: 'source-list' },
+          },
         ]
       }
     }

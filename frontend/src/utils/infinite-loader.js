@@ -1,8 +1,9 @@
 class InfiniteLoader {
-  constructor(dataSource, limit=20) {
+  constructor(dataSource, limit=20, filters={}) {
     this._dataSource = dataSource
     this._offset = 0
     this._limit = limit
+    this._filters = filters
     this.items = []
     this.loading = false
     this.finished = false
@@ -12,7 +13,7 @@ class InfiniteLoader {
     return new Promise((resolve, reject) => {
       if(!this.finished && !this.loading) {
         this.loading = true
-        this._dataSource({offset: this._offset, limit: this._limit}).then(response => {
+        this._dataSource({offset: this._offset, limit: this._limit, ...this._filters}).then(response => {
           if(response.body.results.length > 0) {
             this.items.push(...response.body.results)
 
@@ -32,6 +33,18 @@ class InfiniteLoader {
         })
       }
     });
+  }
+
+  reset() {
+    this.items = []
+    this._offset = 0
+    this.finished = false
+    this.loading = false
+  }
+
+  setFilters(filters) {
+    this._filters = filters
+    this.reset()
   }
 }
 

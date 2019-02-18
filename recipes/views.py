@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.db.models import Q
 from django.http import HttpResponse
 from django.utils.cache import patch_cache_control
 from recipes import models
@@ -6,7 +7,9 @@ from recipes import serializers
 from rest_framework import mixins
 from rest_framework import permissions
 from rest_framework import viewsets
+from rest_framework import status
 from rest_framework.decorators import action
+from rest_framework.response import Response
 
 
 class PictureMixin(object):
@@ -63,6 +66,34 @@ class SourceViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
+    def get_queryset(self):
+        queryset = super(SourceViewSet, self).get_queryset()
+        states = self.request.query_params.get('state', '').split(',')
+        state_filters = None
+
+        for state in states:
+            if state:
+                if state_filters is None:
+                    state_filters = Q(state=state)
+                else:
+                    state_filters = state_filters | Q(state=state)
+
+        if state_filters is not None:
+            return queryset.filter(state_filters)
+
+        return queryset
+
+    @action(detail=True, methods=['post'])
+    def retry(self, request, pk=None):
+        source = self.get_object()
+        if source.state not in [4]:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        source.state = 1
+        source.error = None
+        source.save()
+        serializer = self.serializer_class(source)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class RecipeViewSet(PictureMixin, viewsets.ModelViewSet):
