@@ -2,10 +2,27 @@
   <v-container grid-list-md>
     <v-layout row wrap>
       <v-flex
+        v-if="searchBar"
+        xs12
+      >
+        <v-text-field
+          v-model="searchPattern"
+          clearable
+          solo
+          autofocus
+          type="text"
+          append-icon="search"
+          @keypress.enter="search()"
+          @click:append="search()"
+          @click:clear="clearSearch()"
+        >
+        </v-text-field>
+      </v-flex>
+      <v-flex
         xs12
         v-if="loader.finished && !loader.items.length"
       >
-        <p>No recipe found.</p>
+        <p>No recipe found with those filters.</p>
       </v-flex>
       <v-layout row wrap>
         <template v-if="'vcard' === mode">
@@ -110,6 +127,10 @@
   export default {
     props: {
       dataSource: Function,
+      searchBar: {
+        type: Boolean,
+        default: true,
+      },
       pageSize: {
         type: Number,
         default: 40,
@@ -129,6 +150,7 @@
     data () {
       return {
         loader: new InfiniteLoader(this.dataSource ? this.dataSource : this.$api.recipes.get, this.pageSize),
+        searchPattern: '',
       }
     },
     methods: {
@@ -147,6 +169,18 @@
             this.load()
           }
         }
+      },
+      search() {
+        if(this.searchPattern !== null && this.searchPattern.length > 0) {
+          this.loader.setFilters({search: this.searchPattern})
+        } else {
+          this.loader.setFilters({})
+        }
+        this.load()
+      },
+      clearSearch() {
+        this.searchPattern = null
+        this.search()
       },
       refresh() {
         this.loader.reset()

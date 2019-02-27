@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.contrib.postgres.search import SearchQuery, SearchVector
 from django.db.models import Q
 from django.http import HttpResponse
 from django.utils.cache import patch_cache_control
@@ -100,6 +101,19 @@ class RecipeViewSet(PictureMixin, viewsets.ModelViewSet):
     queryset = models.Recipe.objects.all()
     serializer_class = serializers.RecipeSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+    def get_queryset(self):
+        queryset = super(RecipeViewSet, self).get_queryset()
+        search = self.request.query_params.get('search', '')
+
+        if len(search):
+            return queryset.annotate(
+                search=SearchVector('title', config='french_unaccent'),
+            ).filter(
+                search=SearchQuery(search, config='french_unaccent')
+            )
+
+        return queryset
 
 
 class RequiredIngredientViewSet(viewsets.ModelViewSet):
