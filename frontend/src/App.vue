@@ -110,6 +110,11 @@
             title: 'Sources',
             to: { name: 'source-list' },
           },
+          {
+            icon: 'calendar_today',
+            title: 'Periods',
+            to: { name: 'period-list' },
+          },
         ]
       }
     }

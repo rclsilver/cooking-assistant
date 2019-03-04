@@ -10,6 +10,7 @@ let API = {
           retry: { method: 'POST', url: '/api/sources{/id}/retry' },
         }),
         recipes: Vue.resource('/api/recipes{/id}'),
+        periods: Vue.resource('/api/periods{/id}'),
         users: Vue.resource('/api/users{/id}'),
     }
     Vue.http.interceptors.push(function(request) {

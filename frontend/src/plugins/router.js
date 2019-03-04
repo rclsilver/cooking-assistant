@@ -34,6 +34,11 @@ export const router = new Router({
       component: () => import('@/views/sources/List.vue')
     },
     {
+      path: '/periods',
+      name: 'period-list',
+      component: () => import('@/views/periods/List.vue')
+    },
+    {
       path: '/about',
       name: 'about',
       component: () => import('@/views/About.vue')
