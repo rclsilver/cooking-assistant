@@ -72,6 +72,14 @@
                 </v-btn>
                 <v-card>
                   <v-list>
+                    <v-list-tile :to="{name: 'period-details', params: { id: period.id }}">
+                      <v-list-tile-action>
+                        <v-icon>list</v-icon>
+                      </v-list-tile-action>
+                      <v-list-tile-content>
+                        <v-list-tile-title>Manage recipes</v-list-tile-title>
+                      </v-list-tile-content>
+                    </v-list-tile>
                     <v-list-tile @click="showForm(period)">
                       <v-list-tile-action>
                         <v-icon>edit</v-icon>

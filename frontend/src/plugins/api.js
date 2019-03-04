@@ -10,7 +10,12 @@ let API = {
           retry: { method: 'POST', url: '/api/sources{/id}/retry' },
         }),
         recipes: Vue.resource('/api/recipes{/id}'),
-        periods: Vue.resource('/api/periods{/id}'),
+        periods: Vue.resource('/api/periods{/id}', {}, {
+          getRecipes: { method: 'GET', url: '/api/periods{/id}/recipes' },
+          addRecipe: { method: 'POST', url: '/api/periods{/id}/recipes' },
+          updateRecipe: { method: 'PUT', url: '/api/periods{/id}/recipes{/recipeId}' },
+          deleteRecipe: { method: 'DELETE', url: '/api/periods{/id}/recipes{/recipeId}' },
+        }),
         users: Vue.resource('/api/users{/id}'),
     }
     Vue.http.interceptors.push(function(request) {
