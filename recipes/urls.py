@@ -1,9 +1,9 @@
 from django.urls import include, path
 from recipes import views
-from rest_framework import routers
+from rest_framework_extensions import routers
 
 
-router = routers.DefaultRouter(trailing_slash=False)
+router = routers.ExtendedDefaultRouter(trailing_slash=False)
 router.register(
     'units',
     views.UnitViewSet,
@@ -28,6 +28,19 @@ router.register(
     'users',
     views.UserViewSet,
     base_name='user',
+)
+
+# Periods
+periods_router = router.register(
+    'periods',
+    views.PeriodViewSet,
+    base_name='period',
+)
+periods_router.register(
+    'recipes',
+    views.RecipeInPeriodViewSet,
+    base_name='recipe-in-period',
+    parents_query_lookups=['period'],
 )
 
 urlpatterns = [

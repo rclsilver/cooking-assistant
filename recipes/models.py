@@ -74,3 +74,27 @@ class Rating(Base):
         unique_together = (
             ('author', 'recipe'),
         )
+
+
+class Period(Base):
+    author = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True, blank=True)
+    start_date = models.DateField()
+    end_date = models.DateField()
+
+
+class RecipeInPeriod(Base):
+    MEAL_BREAKFAST = 1
+    MEAL_LUNCH = 2
+    MEAL_SNACK = 3
+    MEAL_DINNER = 4
+    MEAL_CHOICES = (
+        (MEAL_BREAKFAST, 'breakfast'),
+        (MEAL_LUNCH, 'lunch'),
+        (MEAL_SNACK, 'snack'),
+        (MEAL_DINNER, 'dinner'),
+    )
+    author = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True, blank=True)
+    period = models.ForeignKey(Period, on_delete=models.CASCADE, related_name='recipes')
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='periods')
+    date = models.DateField(null=True, blank=True)
+    meal = models.IntegerField(choices=MEAL_CHOICES, null=True, blank=True)

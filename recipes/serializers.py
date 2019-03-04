@@ -78,3 +78,65 @@ class RecipeSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Recipe
         exclude = ('picture',)
+
+
+class PeriodSerializer(serializers.ModelSerializer):
+    author = UserSerializer(read_only=True)
+    recipes = serializers.SerializerMethodField()
+
+    def get_recipes(self, obj):
+        return obj.recipes.count()
+
+    class Meta:
+        model = models.Period
+        fields = '__all__'
+
+
+class RecipeInPeriodSerializer(serializers.ModelSerializer):
+    author = UserSerializer(read_only=True)
+    recipe = RecipeSerializer(read_only=True)
+
+    class Meta:
+        model = models.RecipeInPeriod
+        exclude = ('period',)
+
+
+class RecipeInPeriodSerializerMixins(object):
+    def validate(self, attrs):
+        date = attrs.get('date', self.instance.date if self.instance is not None else None)
+        meal = attrs.get('meal', self.instance.meal if self.instance is not None else None)
+
+        if (
+            date is None and meal is not None
+        ) or (
+            date is not None and meal is None
+        ):
+            raise serializers.ValidationError(
+                {
+                    'date' if date is None else 'meal': [
+                        'Must be defined when {} is defined'.format(
+                            'meal' if meal is not None else 'date',
+                        )
+                    ]
+                }
+            )
+
+        return attrs
+
+
+class AddRecipeInPeriodSerializer(RecipeInPeriodSerializerMixins, serializers.ModelSerializer):
+    date = serializers.DateField(required=False, allow_null=True)
+    meal = serializers.IntegerField(required=False, allow_null=True)
+
+    class Meta:
+        model = models.RecipeInPeriod
+        fields = ('recipe', 'date', 'meal')
+
+
+class UpdateRecipeInPeriodSerializer(RecipeInPeriodSerializerMixins, serializers.ModelSerializer):
+    date = serializers.DateField(required=False, allow_null=True)
+    meal = serializers.IntegerField(required=False, allow_null=True)
+
+    class Meta:
+        model = models.RecipeInPeriod
+        fields = ('date', 'meal')

@@ -1,7 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.search import SearchQuery, SearchVector
-from django.db.models import Q
+from django.db.models import Q, Min, Max
 from django.http import HttpResponse
+from django.utils import timezone
 from django.utils.cache import patch_cache_control
 from recipes import models
 from recipes import serializers
@@ -11,6 +12,8 @@ from rest_framework import viewsets
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError
+from rest_framework_extensions.mixins import NestedViewSetMixin
 
 
 class PictureMixin(object):
@@ -123,6 +126,153 @@ class RequiredIngredientViewSet(viewsets.ModelViewSet):
 
 
 class RatingViewSet(viewsets.ModelViewSet):
-    queryset = models.Rating.objects.all()
+    queryset = models.Period.objects.all().order_by('start_date')
     serializer_class = serializers.RatingSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+
+class PeriodViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
+    queryset = models.Period.objects.all().order_by('start_date')
+    serializer_class = serializers.PeriodSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+    def get_queryset(self):
+        queryset = super(PeriodViewSet, self).get_queryset()
+
+        if 'list' == self.action:
+            past = self.request.query_params.get('past', 'false').lower() == 'true'
+
+            if not past:
+                return queryset.filter(end_date__gte=timezone.now())
+
+        return queryset
+
+    def validate_date(self, data):
+        period = self.get_object() if self.kwargs.get('pk') is not None else None
+        start_date = data.get('start_date', period.start_date if period else None)
+        end_date = data.get('end_date', period.end_date if period else None)
+
+        # All cases
+        if start_date >= end_date:
+            raise ValidationError({
+                'start_date': [
+                    'Date must be strictly before {}'.format(end_date),
+                ],
+                'end_date': [
+                    'Date must be strictly after {}'.format(start_date),
+                ],
+            })
+
+        if end_date < timezone.now().date():
+            raise ValidationError({
+                'end_date': [
+                    'Date cannot be in past',
+                ],
+            })
+
+        # When updating existing period
+        if period is not None:
+            bounds = period.recipes.aggregate(
+                Min('date'),
+                Max('date'),
+            )
+
+            if (
+                bounds['date__min'] is not None and
+                bounds['date__min'] < start_date
+            ):
+                raise ValidationError({
+                    'start_date': [
+                        'Cannot be defined after {}'.format(bounds['date__min'])
+                    ]
+                })
+
+            if (
+                bounds['date__max'] is not None and
+                bounds['date__max'] > end_date
+            ):
+                raise ValidationError({
+                    'start_date': [
+                        'Cannot be defined before {}'.format(bounds['date__max'])
+                    ]
+                })
+
+    def perform_create(self, serializer):
+        # Validate that date is between period dates
+        self.validate_date(serializer.validated_data)
+
+        # Save
+        serializer.save(author=self.request.user)
+
+    def perform_update(self, serializer):
+        # Validate that date is between period dates
+        self.validate_date(serializer.validated_data)
+
+        # Save
+        serializer.save()
+
+
+class RecipeInPeriodViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
+    queryset = models.RecipeInPeriod.objects.all()
+    serializer_class = serializers.RecipeInPeriodSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+    def get_period(self):
+        return models.Period.objects.get(
+            pk=self.kwargs.get('parent_lookup_period'),
+        )
+
+    def validate_date(self, data, period):
+        if 'date' in data and data['date'] is not None:
+            if (
+                data['date'] < period.start_date or
+                data['date'] > period.end_date
+            ):
+                raise ValidationError({
+                    'date': ['Date {} is not between {} and {}'.format(
+                        data['date'],
+                        period.start_date,
+                        period.end_date,
+                    )],
+                })
+
+    def create(self, request, *args, **kwargs):
+        # Validate input data
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        # Fetch parent period
+        period = self.get_period()
+
+        # Validate that date is between period dates
+        self.validate_date(serializer.validated_data, period)
+
+        # Save recipe
+        recipe = serializer.save(
+            author=self.request.user,
+            period=period,
+        )
+
+        # Build serializer with created date
+        serializer = serializers.RecipeInPeriodSerializer(recipe)
+
+        # Back to normal routine
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def perform_update(self, serializer):
+        # Validate that date is between period dates
+        self.validate_date(
+            serializer.validated_data,
+            self.get_period()
+        )
+
+        # Save
+        serializer.save()
+
+    def get_serializer_class(self):
+        if self.action in ['create']:
+            return serializers.AddRecipeInPeriodSerializer
+        elif self.action in ['update', 'partial_update']:
+            return serializers.UpdateRecipeInPeriodSerializer
+        return super(RecipeInPeriodViewSet, self).get_serializer_class()
