@@ -11,12 +11,28 @@
           <v-layout>
             <v-flex xs12>
               <v-layout row wrap>
-                <v-flex xs12>
+                <v-flex xs10>
                   <div>
                     <div class="headline">{{ recipe.title }}</div>
                     <div class="grey--text" v-if="recipe.author !== null">Par {{ recipe.author.username }}</div>
                     <div class="grey--text"><u>Source</u> : <a target="_blank" :href="recipe.source_url">{{ recipe.source_url }}</a></div>
                   </div>
+                </v-flex>
+                <v-flex xs2 v-if="periods">
+                  <v-menu offset-y>
+                    <template v-slot:activator="{ on }">
+                      <v-btn color="primary" v-on="on">Add to a list</v-btn>
+                    </template>
+                    <v-list>
+                      <v-list-tile
+                        v-for="(period, index) in periods"
+                        :key="index"
+                        @click="addToList(recipe, period)"
+                      >
+                        <v-list-tile-title>From {{ period.start_date }} to {{ period.end_date }}</v-list-tile-title>
+                      </v-list-tile>
+                    </v-list>
+                  </v-menu>
                 </v-flex>
               </v-layout>
               <v-divider/>
@@ -113,6 +129,7 @@
     data () {
       return {
         recipe: null,
+        periods: null,
       }
     },
     methods: {
@@ -185,9 +202,21 @@
           this.$store.dispatch('alert/error', 'Unable to load recipe')
         })
       },
+      addToList(recipe, period) {
+        this.$api.periods.addRecipe({ id: period.id }, { recipe: recipe.id }).then(() => {
+          this.$store.dispatch('alert/success', 'Recipe has beed added to list')
+        }, () => {
+          this.$store.dispatch('alert/error', 'Unable to add recipe to list')
+        })
+      },
     },
     mounted: function() {
       this.load()
+      this.$api.periods.get({ limit: 0 }).then(response => {
+        this.periods = response.body.results
+      }, () => {
+        this.$store.dispatch('alert/error', 'Unable to load periods')
+      })
     },
   }
 </script>
