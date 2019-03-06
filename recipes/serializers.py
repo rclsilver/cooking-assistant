@@ -1,8 +1,12 @@
 from django.contrib.auth import get_user_model
-from django.db.models import Avg
+from django.db.models import Avg, Min, Max
 from django.urls import reverse_lazy
+from django.utils import timezone
 from recipes import models
-from rest_framework import serializers
+from rest_framework import (
+    exceptions,
+    serializers,
+)
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -86,6 +90,59 @@ class PeriodSerializer(serializers.ModelSerializer):
 
     def get_recipes(self, obj):
         return obj.recipes.count()
+
+    def validate_end_date(self, value):
+        if value < timezone.now().date():
+            raise exceptions.ValidationError('Date cannot be in past')
+        return value
+
+    def validate(self, attrs):
+        start_date = attrs.get(
+            'start_date',
+            self.instance.start_date if self.instance else None
+        )
+        end_date = attrs.get(
+            'end_date',
+            self.instance.end_date if self.instance else None
+        )
+
+        if start_date >= end_date:
+            raise exceptions.ValidationError({
+                'start_date': [
+                    'Date must be strictly before {}'.format(end_date),
+                ],
+                'end_date': [
+                    'Date must be strictly after {}'.format(start_date),
+                ],
+            })
+
+        if self.instance:
+            bounds = self.instance.recipes.aggregate(
+                Min('date'),
+                Max('date'),
+            )
+
+            if (
+                bounds['date__min'] is not None and
+                bounds['date__min'] < start_date
+            ):
+                raise exceptions.ValidationError({
+                    'start_date': [
+                        'Cannot be defined after {}'.format(bounds['date__min'])
+                    ]
+                })
+
+            if (
+                bounds['date__max'] is not None and
+                bounds['date__max'] > end_date
+            ):
+                raise exceptions.ValidationError({
+                    'end_date': [
+                        'Cannot be defined before {}'.format(bounds['date__max'])
+                    ]
+                })
+
+        return attrs
 
     class Meta:
         model = models.Period

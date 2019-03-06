@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.search import SearchQuery, SearchVector
-from django.db.models import Q, Min, Max
+from django.db.models import Q
 from django.http import HttpResponse
 from django.utils import timezone
 from django.utils.cache import patch_cache_control
@@ -139,77 +139,16 @@ class PeriodViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = super(PeriodViewSet, self).get_queryset()
 
-        if 'list' == self.action:
-            past = self.request.query_params.get('past', 'false').lower() == 'true'
-
-            if not past:
-                return queryset.filter(end_date__gte=timezone.now())
+        if (
+            'list' == self.action and
+            'true' != self.request.query_params.get('past', 'false').lower()
+        ):
+            return queryset.filter(end_date__gte=timezone.now())
 
         return queryset
 
-    def validate_date(self, data):
-        period = self.get_object() if self.kwargs.get('pk') is not None else None
-        start_date = data.get('start_date', period.start_date if period else None)
-        end_date = data.get('end_date', period.end_date if period else None)
-
-        # All cases
-        if start_date >= end_date:
-            raise ValidationError({
-                'start_date': [
-                    'Date must be strictly before {}'.format(end_date),
-                ],
-                'end_date': [
-                    'Date must be strictly after {}'.format(start_date),
-                ],
-            })
-
-        if end_date < timezone.now().date():
-            raise ValidationError({
-                'end_date': [
-                    'Date cannot be in past',
-                ],
-            })
-
-        # When updating existing period
-        if period is not None:
-            bounds = period.recipes.aggregate(
-                Min('date'),
-                Max('date'),
-            )
-
-            if (
-                bounds['date__min'] is not None and
-                bounds['date__min'] < start_date
-            ):
-                raise ValidationError({
-                    'start_date': [
-                        'Cannot be defined after {}'.format(bounds['date__min'])
-                    ]
-                })
-
-            if (
-                bounds['date__max'] is not None and
-                bounds['date__max'] > end_date
-            ):
-                raise ValidationError({
-                    'start_date': [
-                        'Cannot be defined before {}'.format(bounds['date__max'])
-                    ]
-                })
-
     def perform_create(self, serializer):
-        # Validate that date is between period dates
-        self.validate_date(serializer.validated_data)
-
-        # Save
         serializer.save(author=self.request.user)
-
-    def perform_update(self, serializer):
-        # Validate that date is between period dates
-        self.validate_date(serializer.validated_data)
-
-        # Save
-        serializer.save()
 
 
 class RecipeInPeriodViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
