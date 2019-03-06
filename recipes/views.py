@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.search import SearchQuery, SearchVector
-from django.db.models import Q
+from django.db.models import Q, Avg
 from django.http import HttpResponse
 from django.utils import timezone
 from django.utils.cache import patch_cache_control
@@ -105,8 +105,17 @@ class RecipeViewSet(PictureMixin, viewsets.ModelViewSet):
     serializer_class = serializers.RecipeSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
+    def get_serializer_class(self):
+        if 'list' == self.action:
+            return serializers.MinimalRecipeSerializer
+        return super(RecipeViewSet, self).get_serializer_class()
+
     def get_queryset(self):
         queryset = super(RecipeViewSet, self).get_queryset()
+
+        if self.action in ['list', 'retrieve']:
+            queryset =  queryset.annotate(rate=Avg('ratings__rate'))
+
         search = self.request.query_params.get('search', '')
 
         if len(search):

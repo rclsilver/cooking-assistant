@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.db.models import Avg, Min, Max
+from django.db.models import Min, Max
 from django.urls import reverse_lazy
 from django.utils import timezone
 from recipes import models
@@ -67,14 +67,11 @@ class RecipeSerializer(serializers.ModelSerializer):
     picture_url = serializers.SerializerMethodField()
     ingredients = RequiredIngredientSerializer(many=True)
     ratings = RatingSerializer(many=True)
-    rate = serializers.SerializerMethodField()
+    rate = serializers.FloatField(read_only=True)
     source_url = serializers.SerializerMethodField()
 
     def get_picture_url(self, obj):
         return reverse_lazy('recipe-picture', kwargs=dict(pk=obj.pk))
-
-    def get_rate(self, obj):
-        return obj.ratings.all().aggregate(Avg('rate'))['rate__avg']
 
     def get_source_url(self, obj):
         return obj.source.source_url
@@ -82,6 +79,18 @@ class RecipeSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Recipe
         exclude = ('picture',)
+
+
+class MinimalRecipeSerializer(serializers.ModelSerializer):
+    picture_url = serializers.SerializerMethodField()
+    rate = serializers.FloatField(read_only=True)
+
+    def get_picture_url(self, obj):
+        return reverse_lazy('recipe-picture', kwargs=dict(pk=obj.pk))
+
+    class Meta:
+        model = models.Recipe
+        fields = ('id', 'created_at', 'updated_at', 'title', 'rate', 'picture_url')
 
 
 class PeriodSerializer(serializers.ModelSerializer):
