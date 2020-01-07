@@ -1,0 +1,60 @@
+version: '3.4'
+
+networks:
+  frontend:
+  backend:
+
+services:
+  ##############
+  # PostgreSQL #
+  ##############
+  postgresql:
+    image: 'postgres:9.6'
+    environment:
+      POSTGRES_USER: 'cooking-assistant'
+      POSTGRES_PASSWORD: 'cooking-assistant'
+      POSTGRES_DB: 'cooking-assistant'
+    networks:
+      - backend
+    volumes:
+      - ./postgresql:/docker-entrypoint-initdb.d
+
+  ##############
+  # Python API #
+  ##############
+  api:
+    image: 'cooking-assistant-backend'
+    build:
+      context: backend
+    volumes:
+      - ./backend:/usr/src/app
+    environment:
+      APP_ENV: 'dev'
+      APP_TYPE: 'api'
+      APP_CONFIG: 'config-dev.yml'
+    networks:
+      - backend
+      - frontend
+    depends_on:
+      - postgresql
+    entrypoint: [ './docker-entrypoint.sh' ]
+    ports:
+      - 5000:5000
+
+  ##################
+  # VueJS frontend #
+  ##################
+  frontend:
+    image: 'cooking-assistant-frontend'
+    build:
+      context: frontend
+      target: devel-stage
+    volumes:
+      - ./frontend:/app
+    environment:
+      NPM_CONFIG_PREFIX: /tmp
+    networks:
+      - frontend
+    command: sh -c 'npm install && npm install --only=dev && npm run serve'
+    ports:
+      - 8080:8080
