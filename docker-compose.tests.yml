@@ -1,0 +1,29 @@
+version: '3.4'
+
+services:
+  ##############
+  # PostgreSQL #
+  ##############
+  postgresql:
+    image: 'postgres:9.6'
+    environment:
+      POSTGRES_USER: 'cooking-assistant'
+      POSTGRES_PASSWORD: 'cooking-assistant'
+      POSTGRES_DB: 'cooking-assistant'
+
+  ##########
+  # Python #
+  ##########
+  backend:
+    image: 'cooking-assistant-backend'
+    build:
+      context: backend
+    volumes:
+      - ./backend:/usr/src/app
+    environment:
+      APP_ENV: 'test'
+      APP_CONFIG: 'config-test.yml'
+      APP_TYPE: 'tests'
+    depends_on:
+      - postgresql
+    entrypoint: [ './docker-entrypoint.sh' ]

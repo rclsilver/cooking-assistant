@@ -31,6 +31,14 @@ case ${APP_TYPE:-api} in
         main:app
         ;;
 
+    tests)
+        pip install -r requirements/development.txt > /dev/null
+        coverage run -m pytest
+        coverage report
+        coverage html
+        flake8
+        ;;
+
     *)
         echo "Wrong argument: ${APP_TYPE}"
         ;;

@@ -1,0 +1,1 @@
+SQLALCHEMY_DATABASE_URI: postgresql://cooking-assistant:cooking-assistant@postgresql:5432/cooking-assistant
