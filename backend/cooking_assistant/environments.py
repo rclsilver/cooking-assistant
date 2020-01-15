@@ -1,4 +1,4 @@
-from cooking_assistant.extensions import cors, db, jsonschema, ma, migrate
+from cooking_assistant.extensions import cors, db, jsonschema, keycloak, ma, migrate
 from cooking_assistant.logs import setup_loggers
 from flask import Flask
 from pathlib import Path
@@ -20,6 +20,7 @@ class Config(object):
         migrate.init_app(app, db)
         jsonschema.init_app(app)
         cors.init_app(app)
+        keycloak.init_app(app)
 
 
 class DevelopmentConfig(Config):

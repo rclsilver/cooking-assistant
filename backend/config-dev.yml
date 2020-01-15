@@ -1,2 +1,7 @@
 ---
 SQLALCHEMY_DATABASE_URI: postgresql://cooking-assistant:cooking-assistant@postgresql:5432/cooking-assistant
+
+KEYCLOAK_URL: 'http://keycloak:8080/auth/'
+KEYCLOAK_REALM: 'my_realm'
+KEYCLOAK_CLIENT: 'cooking-assistant'
+KEYCLOAK_CLIENT_SECRET: 'a5c8113d-01d4-4d92-8413-cae738ecdf8c'

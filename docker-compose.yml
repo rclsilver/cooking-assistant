@@ -19,6 +19,26 @@ services:
     volumes:
       - ./postgresql:/docker-entrypoint-initdb.d
 
+  ############
+  # Keycloak #
+  ############
+  keycloak:
+    image: 'quay.io/keycloak/keycloak:latest'
+    environment:
+      DB_VENDOR: 'POSTGRES'
+      DB_ADDR: 'postgresql'
+      DB_DATABASE: 'cooking-assistant'
+      DB_USER: 'cooking-assistant'
+      DB_SCHEMA: 'public'
+      DB_PASSWORD: 'cooking-assistant'
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: Pa55w0rd
+    networks:
+      - backend
+      - frontend
+    depends_on:
+      - postgresql
+
   ##############
   # Python API #
   ##############

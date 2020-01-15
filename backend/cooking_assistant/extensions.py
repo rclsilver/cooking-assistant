@@ -1,3 +1,4 @@
+from cooking_assistant.utils.keycloak import Keycloak
 from flask_cors import CORS
 from flask_jsonschema import JsonSchema
 from flask_marshmallow import Marshmallow
@@ -10,3 +11,4 @@ ma = Marshmallow()
 migrate = Migrate()
 cors = CORS()
 jsonschema = JsonSchema()
+keycloak = Keycloak()

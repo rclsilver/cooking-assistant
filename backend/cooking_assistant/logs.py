@@ -46,9 +46,16 @@ def log_postrequest(app: flask.Flask, **kwargs) -> None:
         extra={
             'execution_time': execution_time,
             'response_status_code': response.status_code,
-            'response_content_length': response.content_length
+            'response_content_length': response.content_length,
+            'remote_user': get_remote_user(flask.request)
         }
     )
+
+
+def get_remote_user(request: flask.Request) -> str:
+    if request.user:
+        return request.user.get('preferred_username')
+    return '-'
 
 
 def get_stdout_handler() -> logging.Handler:
