@@ -1,0 +1,16 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div class="mb-3">
+    <label for="url" class="form-label">Recipe URL</label>
+    <input id="url" formControlName="url" type="url" class="form-control" [class.is-invalid]="form.controls['url'].touched && form.controls['url'].errors">
+    <div class="form-text">Enter the recipe URL.</div>
+    <div class="invalid-feedback" *ngIf="form.controls['url'].hasError('server')">
+      {{ form.controls['url'].errors?.server }}
+    </div>
+  </div>
+  <div class="float-left">
+    <a class="btn btn-secondary" routerLink="/recipes">Cancel</a>
+  </div>
+  <div class="float-right">
+    <button class="btn btn-primary" type="submit" [disabled]="!form.valid">Create</button>
+  </div>
+</form>

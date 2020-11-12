@@ -1,0 +1,60 @@
+version: '3.4'
+
+services:
+  ########################
+  # Backend / PostgreSQL #
+  ########################
+  postgresql:
+    image: postgres:12
+    environment:
+      POSTGRES_DB:       cooking-assistant
+      POSTGRES_USER:     cooking-assistant
+      POSTGRES_PASSWORD: cooking-assistant
+
+  #####################
+  # Backend / FastAPI #
+  #####################
+  backend:
+    image: cooking-assistant-backend
+    build:
+      context: backend
+      args:
+        PIP_ENV: development
+    depends_on:
+    - postgresql
+    environment:
+      APP_ENV: development
+      ALEMBIC_UPGRADE: 'true'
+      DB_HOST: postgresql
+      DB_USER: cooking-assistant
+      DB_PASS: cooking-assistant
+      DB_NAME: cooking-assistant
+    volumes:
+    - ./backend:/usr/src
+    ports:
+    - 8000:8000
+
+  #####################
+  # Frontend / ng-cli #
+  #####################
+  frontend-cli:
+    image: trion/ng-cli
+    volumes:
+    - ./frontend:/app
+    command: bash -c "while sleep 2; do true; done"
+
+  ###########################
+  # Frontend / devel-server #
+  ###########################
+  frontend:
+    image: cooking-assistant-frontend
+    build:
+      context: frontend
+      target: devel-stage
+    volumes:
+    - ./frontend:/app
+    environment:
+      NPM_CONFIG_PREFIX: /tmp
+    command: sh -c 'npm install && npm install --only=dev && npm start'
+    ports:
+    - 4200

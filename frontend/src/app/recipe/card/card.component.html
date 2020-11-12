@@ -1,0 +1,36 @@
+<div class="recipe-card">
+  <div class="row">
+    <div class="col-lg-4">
+      <div class="recipe-card-image">
+        <img src="{{ recipe.image_url || 'https://via.placeholder.com/700x500' }}">
+      </div>
+    </div>
+    <div class="col-lg-8">
+      <div class="recipe-card-title">
+        <a href="{{ recipe.url }}" target="_blank">
+          <h4>{{ recipe.title }}</h4>
+        </a>
+        <hr class="d-none d-lg-block">
+      </div>
+      <div class="recipe-card-informations d-none d-lg-block mb-2">
+        <span *ngIf="recipe.author">By {{ recipe.author?.username }} - </span>
+        <span>{{ recipe.created_at| date:'medium' }}</span>
+      </div>
+      <div class="recipe-card-score">
+        <app-recipe-score [recipe]="recipe"></app-recipe-score>
+      </div>
+      <div class="recipe-card-ingredients d-none d-lg-flex mt-2">
+        <span class="mr-1 fw-bold">Ingredients:</span>
+        <span>not implemented</span>
+      </div>
+      <div class="recipe-card-duration d-none d-lg-flex mt-2">
+        <span class="icon">
+          <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-clock" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm8-7A8 8 0 1 1 0 8a8 8 0 0 1 16 0z"/>
+            <path fill-rule="evenodd" d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5z"/>
+          </svg>
+        </span>
+        <span class="label ml-1" height="21em">not implemented</span>
+      </div>
+  </div>
+</div>

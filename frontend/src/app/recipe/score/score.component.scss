@@ -1,0 +1,13 @@
+.recipe-score {
+  display: flex;
+
+  &-hearts {
+    & > svg {
+      margin-right: 0.2rem;
+    }
+  }
+
+  &-label {
+    color: #999;
+  }
+}
