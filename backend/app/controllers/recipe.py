@@ -4,6 +4,7 @@ from app.controllers import BaseController
 from app.models.recipe import Recipe
 from app.parsers import get_parser
 from app.schemas.recipe import RecipeCreate
+from app.schemas.user import User
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from uuid import UUID
@@ -39,12 +40,13 @@ class RecipeController(BaseController):
         return db.query(Recipe).filter_by(url=recipe_url).first()
 
     @classmethod
-    def create_recipe(cls, data: RecipeCreate, db: Session) -> Recipe:
+    def create_recipe(cls, data: RecipeCreate, author: User, db: Session) -> Recipe:
         """
         Create a new recipe in database
         """
         recipe = Recipe()
         recipe.url = data.url
+        recipe.author_id = str(author.id)
 
         db.add(recipe)
         db.commit()

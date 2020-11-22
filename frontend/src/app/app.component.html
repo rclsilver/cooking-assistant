@@ -1,12 +1,12 @@
 <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
   <div class="container-fluid">
-    <img src="assets/images/logo.png" alt="" height="24px" width="24px" class="mr-lg-1">
+    <img src="assets/images/logo.png" height="24px" width="24px" class="mr-lg-1">
     <span class="navbar-brand mb-0 h1">Cooking-Assistant</span>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-main">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div id="navbar" class="navbar-collapse collapse">
-      <ul class="navbar-nav">
+    <div id="navbar-main" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav mr-auto">
         <li class="nav-item">
           <a class="nav-link" routerLink="/recipes" routerLinkActive="active">Recipes</a>
         </li>
@@ -14,9 +14,13 @@
           <a class="nav-link" routerLink="/about" routerLinkActive="active">About</a>
         </li>
       </ul>
+      <app-user-menu></app-user-menu>
     </div>
   </div>
 </nav>
 <div class="container mt-3">
   <router-outlet></router-outlet>
+  <div class="authenticating-loader" *ngIf="!(isDoneLoading | async)">
+    <div>Loading...</div>
+  </div>
 </div>

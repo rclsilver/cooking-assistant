@@ -1,0 +1,3 @@
+<a *ngIf="!(isAuthenticated | async)" class="nav-link active" href="#" (click)="login()">Login</a>
+<span *ngIf="isAuthenticated | async" class="username">{{ identity.preferred_username }}</span>
+<a *ngIf="isAuthenticated | async" class="btn btn-link" href="#" (click)="logout()">Logout</a>

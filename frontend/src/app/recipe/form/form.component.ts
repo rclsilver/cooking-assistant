@@ -1,9 +1,9 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ServerErrorResponse } from 'src/app/@models/error';
 import { Recipe } from 'src/app/@models/recipe';
+import { ApiService } from 'src/app/core/api.service';
 
 @Component({
   selector: 'app-add-form',
@@ -14,8 +14,8 @@ export class RecipeFormComponent implements OnInit {
   form: FormGroup;
 
   constructor(
-    private http: HttpClient,
-    private router: Router
+    protected readonly api: ApiService,
+    protected readonly router: Router
   ) {
     this.form = new FormGroup({
       url: new FormControl('', [ Validators.required ]),
@@ -29,7 +29,7 @@ export class RecipeFormComponent implements OnInit {
     var recipe = new Recipe();
     recipe.url = this.form.value.url;
 
-    this.http.post<Recipe>('/api/recipes/', recipe).subscribe(
+    this.api.createRecipe(recipe).subscribe(
       (recipe: Recipe) => {
         this.router.navigate(['recipes']);
       },

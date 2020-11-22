@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { Routes, RouterModule, ExtraOptions } from '@angular/router';
 import { AboutComponent } from './about/about.component';
+import { RequireUserGuard } from './core/require-user.guard';
 import { PageNotFoundComponent } from './errors/page-not-found/page-not-found.component';
 import { RecipeFormComponent } from './recipe/form/form.component';
 import { RecipeListComponent } from './recipe/list/list.component';
@@ -12,7 +13,8 @@ const routes: Routes = [
   },
   {
     path: 'recipes/add',
-    component: RecipeFormComponent
+    component: RecipeFormComponent,
+    canActivate: [ RequireUserGuard ]
   },
   {
     path: 'about',
@@ -29,8 +31,13 @@ const routes: Routes = [
   }
 ];
 
+const config: ExtraOptions = {
+  useHash: true,
+  initialNavigation: 'disabled'
+};
+
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, config)],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

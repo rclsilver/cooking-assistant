@@ -6,6 +6,7 @@ class UserBase(BaseModel):
     User base schema
     """
     username: str
+    is_admin: bool
 
 
 class User(UserBase):

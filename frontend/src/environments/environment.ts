@@ -3,7 +3,13 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  auth: {
+    issuer: 'https://sso.betrancourt.net/auth/realms/default',
+    clientId: 'cooking-assistant-dev',
+    debug: true,
+    adminGroup: '/administrateurs'
+  }
 };
 
 /*

@@ -1,6 +1,8 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
 import { Recipe } from 'src/app/@models/recipe';
+import { ApiService } from 'src/app/core/api.service';
+import { AuthService } from 'src/app/core/auth.service';
 
 @Component({
   selector: 'app-recipe-list',
@@ -9,20 +11,28 @@ import { Recipe } from 'src/app/@models/recipe';
 })
 export class RecipeListComponent implements OnInit {
   public recipes: Array<Recipe> = [];
+  public canAddRecipe: Observable<boolean>;
 
   constructor(
-    private http: HttpClient
-  ) { }
+    protected readonly api: ApiService,
+    protected readonly auth: AuthService
+  ) {
+    this.canAddRecipe = this.auth.canActivateProtectedRoutes$;
+  }
 
   ngOnInit(): void {
-    this.http.get<Array<Recipe>>('/api/recipes/').subscribe(
+    this.api.getRecipes().subscribe(
       (recipes: Array<Recipe>) => {
         this.recipes = recipes;
       },
       (e: any) => {
         console.error('Error while loading recipes');
-        console.log(e);
+        console.error(e);
       }
     );
+  }
+
+  onRecipeDeleted(recipe: Recipe): void {
+    this.recipes = this.recipes.filter(item => item.id != recipe.id)
   }
 }

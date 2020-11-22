@@ -25,14 +25,20 @@ class UserController(BaseController):
         return db.query(User).get(user_id)
 
     @classmethod
-    def get_or_create_user(cls, username: str, db: Session) -> User:
+    def get_or_create_user(cls, username: str, is_admin:bool, db: Session) -> User:
         """
         Get or create a user
         """
         user = db.query(User).filter_by(username=username).first()
 
         if not user:
-            user = User(username=username)
+            # Create the user
+            user = User(username=username, is_admin=is_admin)
+            db.add(user)
+            db.commit()
+        elif user.is_admin != is_admin:
+            # Update existing user
+            user.is_admin = is_admin
             db.add(user)
             db.commit()
 

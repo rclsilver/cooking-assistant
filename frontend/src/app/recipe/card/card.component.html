@@ -32,5 +32,8 @@
         </span>
         <span class="label ml-1" height="21em">not implemented</span>
       </div>
+      <div class="recipe-actions mt-2">
+        <button class="btn btn-sm btn-danger" *ngIf="canDeleteRecipe | async" (click)="deleteRecipe()">Delete</button>
+      </div>
   </div>
 </div>
