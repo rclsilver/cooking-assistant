@@ -1,0 +1,26 @@
+language: generic
+
+services:
+- docker
+
+env:
+  global:
+    IMAGE_NAME=rclsilver/cooking-assistant
+    TAG_PREFIX=$(date +%Y%m%d%H%M)
+
+install:
+- |
+  docker build \
+    -t ${IMAGE_NAME}-backend \
+    -f backend/Dockerfile \
+    backend/
+
+after_success:
+# Login on hub.docker.com
+- echo "${DOCKER_PASSWORD}" | docker login --username="${DOCKER_USERNAME}" --password-stdin
+
+# Push backend image
+- docker tag "${IMAGE_NAME}-backend" "${IMAGE_NAME}-backend:${TAG_PREFIX}-${TRAVIS_COMMIT}"
+- docker push "${IMAGE_NAME}-backend:${TAG_PREFIX}-${TRAVIS_COMMIT}"
+- docker tag "${IMAGE_NAME}-backend" "${IMAGE_NAME}-backend:latest"
+- docker push "${IMAGE_NAME}-backend:latest"

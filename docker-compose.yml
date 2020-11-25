@@ -1,0 +1,35 @@
+version: '3.4'
+
+services:
+  ########################
+  # Backend / PostgreSQL #
+  ########################
+  postgresql:
+    image: postgres:12
+    environment:
+      POSTGRES_DB:       cooking-assistant
+      POSTGRES_USER:     cooking-assistant
+      POSTGRES_PASSWORD: cooking-assistant
+
+  #####################
+  # Backend / FastAPI #
+  #####################
+  backend:
+    image: cooking-assistant-backend
+    build:
+      context: backend
+      args:
+        PIP_ENV: development
+    depends_on:
+    - postgresql
+    environment:
+      APP_ENV: development
+      ALEMBIC_UPGRADE: 'true'
+      DB_HOST: postgresql
+      DB_USER: cooking-assistant
+      DB_PASS: cooking-assistant
+      DB_NAME: cooking-assistant
+    volumes:
+    - ./backend:/usr/src
+    ports:
+    - 8000:8000
