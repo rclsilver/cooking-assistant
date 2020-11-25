@@ -23,6 +23,22 @@ async def get_recipes(
     return RecipeController.get_recipes(db)
 
 
+@router.get('/{recipe_id}', response_model=Recipe)
+async def get_recipe(
+    recipe_id: UUID = Path(..., title='Recipe ID'),
+    db: Session = Depends(get_session)
+) -> None:
+    """
+    Get a recipe
+    """
+    recipe = RecipeController.get_recipe_by_id(recipe_id, db)
+    
+    if not recipe:
+        raise HTTPException(404, f'Recipe with ID {recipe_id} not found')
+
+    return recipe
+
+
 @router.post('/', response_model=Recipe)
 async def create_recipe(
     payload: RecipeCreate,
