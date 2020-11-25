@@ -43,4 +43,10 @@
   &-informations {
     color: #999;
   }
+
+  &-actions {
+    & > a, button {
+      margin-right: 1em;
+    }
+  }
 }

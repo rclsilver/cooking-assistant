@@ -1,17 +1,16 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { RecipeCardComponent } from './recipe/card/card.component';
-import { RecipeListComponent } from './recipe/list/list.component';
+import { RecipeListComponent } from './recipe/recipe-list/recipe-list.component';
 import { AboutComponent } from './about/about.component';
-import { RecipeScoreComponent } from './recipe/score/score.component';
 import { PageNotFoundComponent } from './errors/page-not-found/page-not-found.component';
-import { RecipeFormComponent } from './recipe/form/form.component';
+import { RecipeFormComponent } from './recipe/recipe-form/recipe-form.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { UserMenuComponent } from './user/user-menu/user-menu.component';
 import { CoreModule } from './core/core.module';
+import { WeeklyPlanningComponent } from './planning/weekly-planning/weekly-planning.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [
@@ -19,13 +18,13 @@ import { CoreModule } from './core/core.module';
     AppComponent,
     PageNotFoundComponent,
     RecipeFormComponent,
-    RecipeCardComponent,
     RecipeListComponent,
-    RecipeScoreComponent,
-    UserMenuComponent
+    UserMenuComponent,
+    WeeklyPlanningComponent
   ],
   imports: [
     BrowserModule,
+    FontAwesomeModule,
     CoreModule.forRoot(),
     AppRoutingModule,
     ReactiveFormsModule

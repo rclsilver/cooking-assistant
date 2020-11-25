@@ -15,11 +15,15 @@ export class ApiService {
     return this.http.get<Array<Recipe>>('/api/recipes/');
   }
 
+  getRecipe(recipeId: string): Observable<Recipe> {
+    return this.http.get<Recipe>(`/api/recipes/${recipeId}`);
+  }
+
   createRecipe(recipe: Recipe): Observable<Recipe> {
     return this.http.post<Recipe>('/api/recipes/', recipe);
   }
 
   deleteRecipe(recipe: Recipe): Observable<null> {
     return this.http.delete<null>(`/api/recipes/${recipe.id}`);
-  };
+  }
 };

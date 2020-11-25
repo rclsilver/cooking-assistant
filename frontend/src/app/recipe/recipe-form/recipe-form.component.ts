@@ -7,8 +7,8 @@ import { ApiService } from 'src/app/core/api.service';
 
 @Component({
   selector: 'app-add-form',
-  templateUrl: './form.component.html',
-  styleUrls: ['./form.component.scss']
+  templateUrl: './recipe-form.component.html',
+  styleUrls: ['./recipe-form.component.scss'],
 })
 export class RecipeFormComponent implements OnInit {
   form: FormGroup;
@@ -18,12 +18,11 @@ export class RecipeFormComponent implements OnInit {
     protected readonly router: Router
   ) {
     this.form = new FormGroup({
-      url: new FormControl('', [ Validators.required ]),
+      url: new FormControl('', [Validators.required]),
     });
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   onSubmit(): void {
     var recipe = new Recipe();
@@ -37,9 +36,9 @@ export class RecipeFormComponent implements OnInit {
         if (e.status == 422 || e.status == 409) {
           let response: ServerErrorResponse = e.error;
 
-          response.detail.forEach(error => {
+          response.detail.forEach((error) => {
             this.form.controls[error.loc[1]].setErrors({
-              server: error.msg
+              server: error.msg,
             });
           });
         }

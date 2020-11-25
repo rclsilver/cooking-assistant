@@ -1,0 +1,47 @@
+<div class="recipe-list">
+  <div *ngIf="canAddRecipe | async" class="text-right mb-3">
+    <a routerLink="/recipes/add" class="btn btn-primary">Add a recipe</a>
+  </div>
+  <div class="row gy-3 gy-lg-5">
+    <div class="col-6 col-lg-12" *ngFor="let recipe of recipes">
+      <div class="recipe-card">
+        <div class="row">
+          <div class="col-lg-4">
+            <div class="recipe-card-image">
+              <img src="{{ recipe.image_url || 'https://via.placeholder.com/700x500' }}">
+            </div>
+          </div>
+          <div class="col-lg-8">
+            <div class="recipe-card-title">
+              <a href="{{ recipe.url }}" target="_blank">
+                <h4>{{ recipe.title }}</h4>
+              </a>
+              <hr class="d-none d-lg-block">
+            </div>
+            <div class="recipe-card-informations d-none d-lg-block mb-2">
+              <span *ngIf="recipe.author">By {{ recipe.author?.username }} - </span>
+              <span>{{ recipe.created_at| date:'medium' }}</span>
+            </div>
+            <div class="recipe-card-ingredients d-none d-lg-flex mt-2">
+              <span class="mr-1 fw-bold">Ingredients:</span>
+              <span>not implemented</span>
+            </div>
+            <div class="recipe-card-duration d-none d-lg-flex mt-2">
+              <span class="icon">
+                <fa-icon [icon]="clockIcon"></fa-icon>
+              </span>
+              <span class="label ml-1" height="21em">not implemented</span>
+            </div>
+            <div class="recipe-card-actions d-flex mt-2">
+              <a *ngIf="canPlanRecipe | async" [routerLink]="['/recipes', recipe.id, 'planning']" class="btn btn-sm btn-outline-dark">
+                <fa-icon [icon]="planningIcon"></fa-icon>
+              </a>
+              <button class="btn btn-sm btn-danger" *ngIf="canDeleteRecipe | async" (click)="deleteRecipe(recipe)">
+                <fa-icon [icon]="deleteIcon"></fa-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+    </div>
+  </div>
+</div>
