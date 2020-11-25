@@ -1,0 +1,27 @@
+<div *ngIf="(planning | async) as planning" class="planning">
+  <div class="header d-flex flex-row justify-content-between mb-2">
+    <div class="previous">
+      <a class="btn btn-sm" [routerLink]="['/planning', [planning.previousDate.getFullYear(), planning.previousDate.getMonth() + 1, planning.previousDate.getDate()].join('-')]">&lt;&lt;</a>
+    </div>
+    <div class="title">
+      <p>Weekly planning</p>
+    </div>
+    <div class="next">
+      <a class="btn btn-sm" [routerLink]="['/planning', [planning.nextDate.getFullYear(), planning.nextDate.getMonth() + 1, planning.nextDate.getDate()].join('-')]">&gt;&gt;</a>
+    </div>
+  </div>
+  <div class="body d-flex flex-column flex-lg-row justify-content-lg-between">
+    <div *ngFor="let day of planning.days" class="day p-1 mb-2 mb-lg-0">
+      <div class="title fw-bold">{{ day.date | date: 'EEE' }} ({{ day.date | date : 'dd LLL'}})</div>
+      <hr class="mt-1 mb-0">
+      <div class="recipes d-flex flex-column">
+        <div *ngIf="!day.recipes.length" class="text-center fst-italic mt-1">No recipe planned</div>
+        <div *ngFor="let recipe of day.recipes" class="recipe mt-1">
+          <a [href]="recipe.url" target="_blank">
+            <img src="{{ recipe.image_url || 'https://via.placeholder.com/700x500' }}">
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

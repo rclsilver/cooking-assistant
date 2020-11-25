@@ -1,0 +1,31 @@
+@import "~bootstrap/scss/_functions.scss";
+@import "~bootstrap/scss/_variables.scss";
+@import "~bootstrap/scss/mixins/_breakpoints.scss";
+
+div.planning {
+  & > div.body {
+    & > div.day {
+      border-radius: 5px;
+      border: 1px solid #000;
+
+      @include media-breakpoint-up(lg) {
+        width: 180px;
+      }
+
+      & > div.title {
+        text-align: center;
+      }
+
+      & > div.recipes {
+        div.recipe {
+          & > a {
+            & > img {
+              width: 100%;
+              height: auto;
+            }
+          }
+        }
+      }
+    }
+  }
+}

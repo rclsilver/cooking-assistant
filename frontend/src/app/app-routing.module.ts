@@ -3,8 +3,9 @@ import { Routes, RouterModule, ExtraOptions } from '@angular/router';
 import { AboutComponent } from './about/about.component';
 import { RequireUserGuard } from './core/require-user.guard';
 import { PageNotFoundComponent } from './errors/page-not-found/page-not-found.component';
-import { RecipeFormComponent } from './recipe/form/form.component';
-import { RecipeListComponent } from './recipe/list/list.component';
+import { WeeklyPlanningComponent } from './planning/weekly-planning/weekly-planning.component';
+import { RecipeFormComponent } from './recipe/recipe-form/recipe-form.component';
+import { RecipeListComponent } from './recipe/recipe-list/recipe-list.component';
 
 const routes: Routes = [
   {
@@ -14,21 +15,31 @@ const routes: Routes = [
   {
     path: 'recipes/add',
     component: RecipeFormComponent,
-    canActivate: [ RequireUserGuard ]
+    canActivate: [RequireUserGuard],
+  },
+  {
+    path: 'planning',
+    component: WeeklyPlanningComponent,
+    canActivate: [RequireUserGuard],
+  },
+  {
+    path: 'planning/:date',
+    component: WeeklyPlanningComponent,
+    canActivate: [RequireUserGuard],
   },
   {
     path: 'about',
-    component: AboutComponent
+    component: AboutComponent,
   },
   {
     path: '',
     redirectTo: '/recipes',
-    pathMatch: 'full'
+    pathMatch: 'full',
   },
   {
     path: '**',
-    component: PageNotFoundComponent
-  }
+    component: PageNotFoundComponent,
+  },
 ];
 
 const config: ExtraOptions = {
