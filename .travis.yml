@@ -14,6 +14,11 @@ install:
     -t ${IMAGE_NAME}-backend \
     -f backend/Dockerfile \
     backend/
+- |
+  docker build \
+    -t ${IMAGE_NAME}-frontend \
+    -f frontend/Dockerfile \
+    frontend/
 
 after_success:
 # Login on hub.docker.com
@@ -24,3 +29,9 @@ after_success:
 - docker push "${IMAGE_NAME}-backend:${TAG_PREFIX}-${TRAVIS_COMMIT}"
 - docker tag "${IMAGE_NAME}-backend" "${IMAGE_NAME}-backend:latest"
 - docker push "${IMAGE_NAME}-backend:latest"
+
+# Push frontend image
+- docker tag "${IMAGE_NAME}-frontend" "${IMAGE_NAME}-frontend:${TAG_PREFIX}-${TRAVIS_COMMIT}"
+- docker push "${IMAGE_NAME}-frontend:${TAG_PREFIX}-${TRAVIS_COMMIT}"
+- docker tag "${IMAGE_NAME}-frontend" "${IMAGE_NAME}-frontend:latest"
+- docker push "${IMAGE_NAME}-frontend:latest"
