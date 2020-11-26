@@ -5,6 +5,10 @@
       [opened]="(isHandset$ | async) === false">
     <mat-toolbar>Menu</mat-toolbar>
     <mat-nav-list>
+      <a *ngIf="!(isAuthenticated$ | async)" mat-list-item (click)="login()">Login</a>
+      <a *ngIf="(isAuthenticated$ | async)" mat-list-item>{{ identity.preferred_username }}</a>
+      <a *ngIf="(isAuthenticated$ | async)" mat-list-item (click)="logout()">Logout</a>
+      <mat-divider></mat-divider>
       <a mat-list-item href="#">Link 1</a>
       <a mat-list-item href="#">Link 2</a>
       <a mat-list-item href="#">Link 3</a>
@@ -17,13 +21,16 @@
         aria-label="Toggle sidenav"
         mat-icon-button
         (click)="drawer.toggle()"
-        *ngIf="isHandset$ | async">
+        *ngIf="(isHandset$ | async) && !(isLoading$ | async)">
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
       <span>Cooking-Assistant</span>
     </mat-toolbar>
-    <div class="main-container">
+    <div *ngIf="!(isLoading$ | async)" class="main-container">
       <router-outlet></router-outlet>
+    </div>
+    <div *ngIf="isLoading$ | async" class="loader-modal">
+      <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
     </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
