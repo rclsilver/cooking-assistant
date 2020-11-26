@@ -4,7 +4,7 @@ import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ServerErrorDialogComponent } from 'src/app/shared/server-error-dialog/server-error-dialog.component';
 import { ControllerError, ValidationError } from 'src/app/shared/types';
-import { Recipe } from '../recipes/types';
+import { Recipe, RecipeImportPayload } from '../recipes/types';
 
 @Injectable({
   providedIn: 'root',
@@ -63,8 +63,8 @@ export class ApiService {
     return this.http.get<Recipe>(`/api/recipes/${recipeId}`).toPromise();
   }
 
-  importRecipe(recipe: Recipe): Promise<Recipe> {
-    return this.http.post<Recipe>('/api/recipes/import', recipe).toPromise();
+  importRecipe(payload: RecipeImportPayload): Promise<Recipe> {
+    return this.http.post<Recipe>('/api/recipes/import', payload).toPromise();
   }
 
   deleteRecipe(recipe: Recipe): Promise<null> {

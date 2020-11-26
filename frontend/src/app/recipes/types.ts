@@ -9,3 +9,7 @@ export type Recipe = {
   image_url: string | null;
   author: User | null;
 }
+
+export type RecipeImportPayload = {
+  url: string;
+};

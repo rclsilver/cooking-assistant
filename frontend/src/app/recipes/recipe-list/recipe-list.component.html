@@ -1,5 +1,16 @@
 <div class="header">
   <h2>Recipes</h2>
+  <div *ngIf="isAuthenticated$ | async">
+    <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Recipe menu">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu" xPosition="before">
+      <a mat-menu-item aria-label="Schedule the recipe" routerLink="/recipes/import">
+        <mat-icon>cloud_download</mat-icon>
+        <span>Import</span>
+      </a>
+    </mat-menu>
+  </div>
 </div>
 <hr>
 <div class="recipe-list">

@@ -1,0 +1,17 @@
+<h2>Import a recipe</h2>
+<hr>
+<form [formGroup]="form" (submit)="submit()">
+  <mat-form-field appearance="fill">
+    <mat-label>Enter the recipe URL</mat-label>
+    <input matInput formControlName="url" placeholder="https://..." required>
+    <mat-error *ngIf="form.controls.url.touched && form.controls.url.invalid">
+      <span *ngIf="form.controls.url.errors?.required">This field is mandatory</span>
+      <span *ngIf="form.controls.url.errors?.pattern">Invalid URL</span>
+      <span *ngIf="form.controls.url.errors?.server">{{ form.controls.url.errors?.server }}</span>
+    </mat-error>
+  </mat-form-field>
+  <div class="buttons">
+    <button mat-raised-button color="secondary" (click)="cancel()">Cancel</button>
+    <button mat-raised-button color="primary" type="submit" [disabled]="!form.valid">Create</button>
+  </div>
+</form>
