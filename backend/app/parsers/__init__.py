@@ -3,7 +3,7 @@ import re
 import requests
 
 from bs4 import BeautifulSoup
-from typing import Dict, Type
+from typing import Dict, Optional, Type
 
 
 logger = logging.getLogger(__name__)
@@ -34,14 +34,16 @@ class Parser:
             self.IMAGE: ''
         }
 
-    def _fetch_html(self) -> str:
+    def _fetch_html(self, url: Optional[str] = None, *args, **kwargs) -> str:
         """
         Fetch the HTML content from the URL
         """
-        res = requests.get(self._url)
+        if not url:
+            url = self._url
+        res = requests.get(url, *args, **kwargs)
         if not res.ok:
             raise ParserException(
-                f'Invalid HTTP response for URL "{self._url}": {res.status_code}'
+                f'Invalid HTTP response for URL "{url}": {res.status_code}'
             )
         return res.text
 
@@ -108,3 +110,4 @@ def get_parser(url: str) -> Parser:
 from app.parsers.cuisine_actuelle import CuisineActuelleParser
 from app.parsers.marmiton import MarmitonParser
 from app.parsers.un_jour_une_recette import UnJourUneRecetteParser
+from app.parsers.envie_de_bien_manger import EnvieDeBienMangerParser
