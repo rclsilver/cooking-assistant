@@ -21,6 +21,7 @@ from app.database import get_url
 from app.models import Base
 from app.models.planning import RecipeSchedule
 from app.models.recipe import Recipe
+from app.models.unit import Unit
 from app.models.user import User
 target_metadata = Base.metadata
 

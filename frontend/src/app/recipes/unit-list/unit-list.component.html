@@ -1,0 +1,56 @@
+<div class="header">
+  <h2>Units</h2>
+  <div>
+    <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Units menu">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu" xPosition="before">
+      <button mat-menu-item aria-label="Create a new unit" (click)="createUnit()">
+        <mat-icon>add</mat-icon>
+        <span>New unit</span>
+      </button>
+    </mat-menu>
+  </div>
+</div>
+<hr>
+<table mat-table [dataSource]="units">
+  <ng-container matColumnDef="id">
+    <th mat-header-cell *matHeaderCellDef>ID</th>
+    <td mat-cell *matCellDef="let unit">{{ unit.id }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="created_at">
+    <th mat-header-cell *matHeaderCellDef>Created At</th>
+    <td mat-cell *matCellDef="let unit">{{ unit.created_at | date:'medium' }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="updated_at">
+    <th mat-header-cell *matHeaderCellDef>Updated At</th>
+    <td mat-cell *matCellDef="let unit">{{ unit.updated_at | date:'medium' }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="label">
+    <th mat-header-cell *matHeaderCellDef>Label</th>
+    <td mat-cell *matCellDef="let unit">{{ unit.label }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="label_plural">
+    <th mat-header-cell *matHeaderCellDef>Plural</th>
+    <td mat-cell *matCellDef="let unit">{{ unit.label_plural || '-' }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef>Actions</th>
+    <td mat-cell *matCellDef="let unit">
+      <button mat-flat-button (click)="editUnit(unit)">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button mat-flat-button (click)="deleteUnit(unit)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="columns"></tr>
+  <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+</table>

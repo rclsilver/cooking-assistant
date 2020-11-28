@@ -4,7 +4,7 @@ import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ServerErrorDialogComponent } from 'src/app/shared/server-error-dialog/server-error-dialog.component';
 import { ControllerError, ValidationError } from 'src/app/shared/types';
-import { Recipe, RecipeImportPayload, RecipeSchedule, RecipeSchedulePayload } from 'src/app/recipes/types';
+import { Recipe, RecipeImportPayload, RecipeSchedule, RecipeSchedulePayload, Unit, UnitPayload } from 'src/app/recipes/types';
 import { Planning, PlanningDay } from '../planning/types';
 import * as moment from 'moment';
 import { map } from 'rxjs/operators';
@@ -110,5 +110,27 @@ export class ApiService {
   removePlanningRecipe(schedule: RecipeSchedule): Promise<null> {
     return this.http.delete<null>(`/api/recipes/${schedule.recipe.id}/schedules/${schedule.id}`)
       .toPromise();
+  }
+
+  getUnits(): Promise<Unit[]> {
+    return this.http.get<Unit[]>('/api/units/').toPromise();
+  }
+
+  createUnit(payload: UnitPayload): Promise<Unit> {
+    return this.http.post<Unit>('/api/units/', {
+      label: payload.label,
+      label_plural: payload.label_plural ? payload.label_plural : null
+    }).toPromise();
+  }
+
+  updateUnit(unit: Unit, payload: UnitPayload): Promise<Unit> {
+    return this.http.put<Unit>(`/api/units/${unit.id}`, {
+      label: payload.label,
+      label_plural: payload.label_plural ? payload.label_plural : null
+    }).toPromise();
+  }
+
+  deleteUnit(unit: Unit): Promise<null> {
+    return this.http.delete<null>(`/api/units/${unit.id}`).toPromise();
   }
 }

@@ -28,3 +28,16 @@ export type RecipeSchedulePayload = {
   recipe: Recipe;
   date: Moment;
 }
+
+export type Unit = {
+  id: string;
+  created_at: string;
+  updated_at: string;
+  label: string;
+  label_plural: string | null;
+}
+
+export type UnitPayload = {
+  label: string;
+  label_plural: string | null;
+}

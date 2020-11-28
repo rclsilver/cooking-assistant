@@ -11,6 +11,8 @@
       <mat-divider></mat-divider>
       <a mat-list-item routerLink="/recipes">Recipes</a>
       <a *ngIf="(isAuthenticated$ | async)" mat-list-item routerLink="/planning">Planning</a>
+      <mat-divider *ngIf="isAdministrator$ | async"></mat-divider>
+      <a *ngIf="(isAdministrator$ | async)" mat-list-item routerLink="/units">Units</a>
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>

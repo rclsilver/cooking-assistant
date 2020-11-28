@@ -7,7 +7,7 @@ from app.auth.oidc import OidcAuth
 from app.controllers import ControllerException
 from app.controllers.user import UserController
 from app.database import get_session
-from app.routers import planning, recipe, user
+from app.routers import planning, recipe, unit, user
 from fastapi import Depends, FastAPI, Header, Request, Response
 from sqlalchemy.orm import Session
 from typing import Callable
@@ -38,4 +38,5 @@ app.add_exception_handler(ControllerException, errors.handle_controller_exceptio
 # Create the routes
 app.include_router(planning.router, prefix='/planning')
 app.include_router(recipe.router, prefix='/recipes')
+app.include_router(unit.router, prefix='/units')
 app.include_router(user.router, prefix='/users')

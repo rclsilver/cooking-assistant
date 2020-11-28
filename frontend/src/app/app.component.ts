@@ -20,6 +20,7 @@ export class AppComponent implements OnInit {
 
   isLoading$: Observable<boolean>;
   isAuthenticated$: Observable<boolean>;
+  isAdministrator$: Observable<boolean>;
 
   constructor(
     private breakpointObserver: BreakpointObserver,
@@ -27,6 +28,7 @@ export class AppComponent implements OnInit {
   ) {
     this.isLoading$ = this.auth.isDoneLoading$.pipe(map((result) => !result));
     this.isAuthenticated$ = this.auth.isAuthenticated$;
+    this.isAdministrator$ = this.auth.isAdministrator$;
   }
 
   ngOnInit(): void {
