@@ -6,6 +6,7 @@ import { RecipeImportFormComponent } from './recipes/recipe-import-form/recipe-i
 import { WeeklyPlanningComponent } from './planning/weekly-planning/weekly-planning.component';
 import { RecipeListComponent } from './recipes/recipe-list/recipe-list.component';
 import { UnitListComponent } from './recipes/unit-list/unit-list.component';
+import { IngredientListComponent } from './recipes/ingredient-list/ingredient-list.component';
 
 const routes: Routes = [
   {
@@ -23,6 +24,11 @@ const routes: Routes = [
     canActivate: [RequireAdminGuard]
   },
   {
+    path: 'ingredients',
+    component: IngredientListComponent,
+    canActivate: [RequireAdminGuard]
+  },
+  {
     path: 'planning',
     component: WeeklyPlanningComponent,
     canActivate: [RequireUserGuard]
@@ -35,8 +41,8 @@ const routes: Routes = [
   {
     path: '',
     redirectTo: '/recipes',
-    pathMatch: 'full',
-  },
+    pathMatch: 'full'
+  }
 ];
 
 const config: ExtraOptions = {

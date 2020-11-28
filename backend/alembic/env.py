@@ -19,6 +19,7 @@ fileConfig(config.config_file_name)
 # target_metadata = mymodel.Base.metadata
 from app.database import get_url
 from app.models import Base
+from app.models.ingredient import Ingredient
 from app.models.planning import RecipeSchedule
 from app.models.recipe import Recipe
 from app.models.unit import Unit

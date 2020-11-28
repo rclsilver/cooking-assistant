@@ -1,0 +1,34 @@
+<h1 mat-dialog-title>
+  <ng-container *ngIf="!data.ingredient">Create ingredient</ng-container>
+  <ng-container *ngIf="data.ingredient">Update ingredient</ng-container>
+</h1>
+<form [formGroup]="form" (submit)="submit()">
+  <div mat-dialog-content class="content">
+    <mat-form-field appearance="fill">
+      <mat-label>Ingredient label</mat-label>
+      <input matInput formControlName="label" required>
+      <mat-error *ngIf="form.controls.label.touched && form.controls.label.invalid">
+        <span *ngIf="form.controls.label.errors?.required">This field is mandatory</span>
+        <span *ngIf="form.controls.label.errors?.server">{{ form.controls.label.errors?.server }}</span>
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Plural label</mat-label>
+      <input matInput formControlName="label_plural">
+      <mat-error *ngIf="form.controls.label_plural.touched && form.controls.label_plural.invalid">
+        <span *ngIf="form.controls.label_plural.errors?.server">{{ form.controls.label_plural.errors?.server }}</span>
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Image URL</mat-label>
+      <input matInput formControlName="image_url">
+      <mat-error *ngIf="form.controls.image_url.touched && form.controls.image_url.invalid">
+        <span *ngIf="form.controls.image_url.errors?.server">{{ form.controls.image_url.errors?.server }}</span>
+      </mat-error>
+    </mat-form-field>
+  </div>
+  <div mat-dialog-actions align="center">
+    <button mat-button color="secondary" type="button" (click)="cancel()">Cancel</button>
+    <button mat-button color="primary" type="submit" [disabled]="form.invalid || !form.touched">Submit</button>
+  </div>
+</form>

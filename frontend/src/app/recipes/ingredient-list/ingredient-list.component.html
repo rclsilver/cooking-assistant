@@ -1,0 +1,61 @@
+<div class="header">
+  <h2>Ingredients</h2>
+  <div>
+    <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Ingredients menu">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu" xPosition="before">
+      <button mat-menu-item aria-label="Create a new ingredient" (click)="createIngredient()">
+        <mat-icon>add</mat-icon>
+        <span>New ingredient</span>
+      </button>
+    </mat-menu>
+  </div>
+</div>
+<hr>
+<table mat-table [dataSource]="ingredients">
+  <ng-container matColumnDef="id">
+    <th mat-header-cell *matHeaderCellDef>ID</th>
+    <td mat-cell *matCellDef="let ingredient">{{ ingredient.id }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="created_at">
+    <th mat-header-cell *matHeaderCellDef>Created At</th>
+    <td mat-cell *matCellDef="let ingredient">{{ ingredient.created_at | date:'medium' }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="updated_at">
+    <th mat-header-cell *matHeaderCellDef>Updated At</th>
+    <td mat-cell *matCellDef="let ingredient">{{ ingredient.updated_at | date:'medium' }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="label">
+    <th mat-header-cell *matHeaderCellDef>Label</th>
+    <td mat-cell *matCellDef="let ingredient">{{ ingredient.label }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="label_plural">
+    <th mat-header-cell *matHeaderCellDef>Plural</th>
+    <td mat-cell *matCellDef="let ingredient">{{ ingredient.label_plural || '-' }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="image_url">
+    <th mat-header-cell *matHeaderCellDef>Image URL</th>
+    <td mat-cell *matCellDef="let ingredient">{{ ingredient.image_url || '-' }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef>Actions</th>
+    <td mat-cell *matCellDef="let ingredient">
+      <button mat-flat-button (click)="editIngredient(ingredient)">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button mat-flat-button (click)="deleteIngredient(ingredient)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="columns"></tr>
+  <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+</table>

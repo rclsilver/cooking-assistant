@@ -16,6 +16,8 @@ import { RecipePlanningDialogComponent } from './recipe-planning-dialog/recipe-p
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { UnitListComponent } from './unit-list/unit-list.component';
 import { UnitFormComponent } from './unit-form/unit-form.component';
+import { IngredientListComponent } from './ingredient-list/ingredient-list.component';
+import { IngredientFormComponent } from './ingredient-form/ingredient-form.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +26,8 @@ import { UnitFormComponent } from './unit-form/unit-form.component';
     RecipePlanningDialogComponent,
     UnitListComponent,
     UnitFormComponent,
+    IngredientListComponent,
+    IngredientFormComponent,
   ],
   imports: [
     CommonModule,

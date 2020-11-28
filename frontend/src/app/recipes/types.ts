@@ -41,3 +41,18 @@ export type UnitPayload = {
   label: string;
   label_plural: string | null;
 }
+
+export type Ingredient = {
+  id: string;
+  created_at: string;
+  updated_at: string;
+  label: string;
+  label_plural: string | null;
+  image_url: string | null;
+};
+
+export type IngredientPayload = {
+  label: string;
+  label_plural: string | null;
+  image_url: string | null;
+};
