@@ -1,11 +1,13 @@
 import logging
 
 from app.controllers import BaseController
+from app.models.ingredient import Ingredient
 from app.models.planning import RecipeSchedule
-from app.models.recipe import Recipe
+from app.models.recipe import Recipe, RecipeIngredient
+from app.models.unit import Unit
 from app.parsers import get_parser
 from app.schemas.planning import PlanningCreate
-from app.schemas.recipe import RecipeImport
+from app.schemas.recipe import RecipeImport, RecipeIngredientCreate, RecipeIngredientUpdate
 from app.schemas.user import User
 from sqlalchemy.orm import Session
 from typing import List, Optional
@@ -59,6 +61,9 @@ class RecipeController(BaseController):
         """
         Delete a recipe from database
         """
+        for ingredient in recipe.ingredients:
+            db.delete(ingredient)
+
         for schedule in recipe.schedules:
             db.delete(schedule)
 
@@ -116,4 +121,62 @@ class RecipeController(BaseController):
         Unschedule a recipe
         """
         db.delete(schedule)
+        db.commit()
+
+    @classmethod
+    def get_recipe_ingredient(cls, recipe: Recipe, ingredient_id: UUID, db: Session) -> RecipeIngredient:
+        """
+        Get an ingredient in a recipe
+        """
+        return cls._get(db, RecipeIngredient, recipe=recipe, id=ingredient_id)
+
+    @classmethod
+    def add_recipe_ingredient(cls, recipe: Recipe, payload: RecipeIngredientCreate, db: Session) -> RecipeIngredient:
+        """
+        Add an ingredient in a recipe
+        """
+        target_ingredient = cls._get_foreign(db, Ingredient, id=payload.ingredient_id)
+        target_unit = cls._get_foreign(db, Unit, id=payload.unit_id) if payload.unit_id else None
+
+        cls._raise_if_already_exists(
+            db.query(RecipeIngredient).filter_by(recipe=recipe, ingredient=target_ingredient),
+            'Ingredient is already present in this recipe',
+            'RECIPE_INGREDIENT_ALREADY_EXISTS',
+            ingredient_id=payload.ingredient_id
+        )
+
+        ingredient = RecipeIngredient()
+        ingredient.quantity = payload.quantity
+        ingredient.optional = payload.optional
+        ingredient.recipe_id = str(recipe.id)
+        ingredient.ingredient_id = str(target_ingredient.id)
+        ingredient.unit_id = str(target_unit.id) if target_unit else None
+
+        db.add(ingredient)
+        db.commit()
+
+        return ingredient
+
+    @classmethod
+    def update_recipe_ingredient(cls, recipe: Recipe, ingredient: RecipeIngredient, payload: RecipeIngredientUpdate, db: Session) -> RecipeIngredient:
+        """
+        Update an ingredient in a recipe
+        """
+        target_unit = cls._get_foreign(db, Unit, id=payload.unit_id) if payload.unit_id else None
+
+        ingredient.quantity = payload.quantity
+        ingredient.optional = payload.optional
+        ingredient.unit_id = str(target_unit.id) if target_unit else None
+
+        db.add(ingredient)
+        db.commit()
+
+        return ingredient
+
+    @classmethod
+    def delete_recipe_ingredient(cls, recipe: Recipe, ingredient: RecipeIngredient, db: Session) -> None:
+        """
+        Delete an ingredient from a recipe
+        """
+        db.delete(ingredient)
         db.commit()

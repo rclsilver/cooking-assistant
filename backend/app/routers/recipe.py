@@ -5,9 +5,9 @@ from app.controllers.user import UserController
 from app.database import get_session
 from app.routers import admin_required
 from app.schemas.planning import PlanningCreate
-from app.schemas.recipe import Recipe, RecipeImport, RecipeSchedule
+from app.schemas.recipe import Recipe, RecipeImport, RecipeIngredient, RecipeIngredientCreate, RecipeIngredientUpdate, RecipeSchedule
 from app.schemas.user import User
-from fastapi import APIRouter, BackgroundTasks, Body, Depends, HTTPException, Path, Response, status
+from fastapi import APIRouter, BackgroundTasks, Body, Depends, Path, Response, status
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from uuid import UUID
@@ -105,3 +105,48 @@ async def delete_schedule(
     recipe = RecipeController.get_recipe(recipe_id, db)
     schedule = PlanningController.get_schedule(recipe, schedule_id, db)
     RecipeController.remove_recipe_schedule(schedule, db)
+
+
+@router.post('/{recipe_id}/ingredients/', response_model=RecipeIngredient)
+async def add_ingredient(
+    recipe_id: UUID = Path(..., title='Recipe ID'),
+    payload: RecipeIngredientCreate = Body(..., title='Ingredient payload'),
+    user: User = Depends(get_user),
+    db: Session = Depends(get_session)
+) -> RecipeIngredient:
+    """
+    Add an ingredient in a recipe
+    """
+    recipe = RecipeController.get_recipe(recipe_id, db)
+    return RecipeController.add_recipe_ingredient(recipe, payload, db)
+
+
+@router.put('/{recipe_id}/ingredients/{ingredient_id}', response_model=RecipeIngredient)
+async def update_ingredient(
+    recipe_id: UUID = Path(..., title='Recipe ID'),
+    ingredient_id: UUID = Path(..., title='Ingredient ID'),
+    payload: RecipeIngredientUpdate = Body(..., title='Ingredient payload'),
+    user: User = Depends(get_user),
+    db: Session = Depends(get_session)
+) -> RecipeIngredient:
+    """
+    Update an ingredient in a recipe
+    """
+    recipe = RecipeController.get_recipe(recipe_id, db)
+    ingredient = RecipeController.get_recipe_ingredient(recipe, ingredient_id, db)
+    return RecipeController.update_recipe_ingredient(recipe, ingredient, payload, db)
+
+
+@router.delete('/{recipe_id}/ingredients/{ingredient_id}', response_class=Response, status_code=status.HTTP_204_NO_CONTENT)
+async def remove_ingredient(
+    recipe_id: UUID = Path(..., title='Recipe ID'),
+    ingredient_id: UUID = Path(..., title='Ingredient ID'),
+    user: User = Depends(get_user),
+    db: Session = Depends(get_session)
+) -> None:
+    """
+    Remove an ingredient from a recipe
+    """
+    recipe = RecipeController.get_recipe(recipe_id, db)
+    ingredient = RecipeController.get_recipe_ingredient(recipe, ingredient_id, db)
+    RecipeController.delete_recipe_ingredient(recipe, ingredient, db)

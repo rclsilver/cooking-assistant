@@ -1,6 +1,30 @@
 import { User } from '../auth/types';
 import { Moment } from 'moment';
 
+export type RecipeIngredient = {
+  id: string;
+  created_at: string;
+  updated_at: string;
+  quantity: number | null;
+  optional: boolean;
+  ingredient: Ingredient;
+  unit: Unit | null;
+};
+
+export type RecipeIngredientCreatePayload = {
+  quantity: number | null;
+  optional: boolean;
+  ingredient_id: string;
+  unit_id: string | null;
+};
+
+export type RecipeIngredientUpdatePayload = {
+  quantity: number | null;
+  optional: boolean;
+  ingredient_id: string;
+  unit_id: string | null;
+};
+
 export type Recipe = {
   id: string | null;
   created_at: string | null;
@@ -9,6 +33,7 @@ export type Recipe = {
   url: string;
   image_url: string | null;
   author: User | null;
+  ingredients: RecipeIngredient[];
 }
 
 export type RecipeImportPayload = {
