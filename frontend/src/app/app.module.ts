@@ -12,6 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthModule } from './auth/auth.module';
+import { RecipesModule } from './recipes/recipes.module';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { AuthModule } from './auth/auth.module';
   imports: [
     BrowserModule,
     AuthModule.forRoot(),
+    RecipesModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     LayoutModule,

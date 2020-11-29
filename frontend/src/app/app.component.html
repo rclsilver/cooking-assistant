@@ -9,9 +9,7 @@
       <a *ngIf="(isAuthenticated$ | async)" mat-list-item>{{ identity.preferred_username }}</a>
       <a *ngIf="(isAuthenticated$ | async)" mat-list-item (click)="logout()">Logout</a>
       <mat-divider></mat-divider>
-      <a mat-list-item href="#">Link 1</a>
-      <a mat-list-item href="#">Link 2</a>
-      <a mat-list-item href="#">Link 3</a>
+      <a mat-list-item routerLink="/recipes">Recipes</a>
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
