@@ -3,6 +3,7 @@
   <img class="recipe-image" src="{{ data.schedule.recipe.image_url || '/assets/images/no-image.png' }}">
 </div>
 <div mat-dialog-actions align="center">
+  <button mat-button (click)="viewRecipe()">View recipe</button>
   <button mat-button color="warn" (click)="remove()">Remove</button>
   <button mat-button color="primary" (click)="close()">Close</button>
 </div>

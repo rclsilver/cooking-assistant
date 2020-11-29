@@ -18,6 +18,7 @@ import { UnitListComponent } from './unit-list/unit-list.component';
 import { UnitFormComponent } from './unit-form/unit-form.component';
 import { IngredientListComponent } from './ingredient-list/ingredient-list.component';
 import { IngredientFormComponent } from './ingredient-form/ingredient-form.component';
+import { RecipeViewComponent } from './recipe-view/recipe-view.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { IngredientFormComponent } from './ingredient-form/ingredient-form.compo
     UnitFormComponent,
     IngredientListComponent,
     IngredientFormComponent,
+    RecipeViewComponent,
   ],
   imports: [
     CommonModule,
@@ -41,6 +43,7 @@ import { IngredientFormComponent } from './ingredient-form/ingredient-form.compo
     MatDatepickerModule,
     MatMomentDateModule,
     MatTableModule,
+    MatMenuModule,
     ReactiveFormsModule,
   ],
 })

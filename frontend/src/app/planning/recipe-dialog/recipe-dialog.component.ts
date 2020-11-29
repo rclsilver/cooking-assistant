@@ -1,5 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { RecipeSchedule } from 'src/app/recipes/types';
 import { ApiService } from 'src/app/shared/api.service';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
@@ -16,8 +17,14 @@ export class RecipeDialogComponent {
     },
     private dialogRef: MatDialogRef<RecipeDialogComponent>,
     private api: ApiService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private router: Router
   ) {}
+
+  viewRecipe(): void {
+    this.router.navigate(['/recipes', this.data.schedule.recipe.id])
+      .then(() => this.dialogRef.close(null));
+  }
 
   close(): void {
     this.dialogRef.close(null);

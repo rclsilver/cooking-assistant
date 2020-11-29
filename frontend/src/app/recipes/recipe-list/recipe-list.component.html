@@ -16,7 +16,7 @@
 <div class="recipe-list">
   <mat-card *ngFor="let recipe of recipes" class="recipe-card" [ngClass]="{'recipe-card-handset': (isHandset$ | async), 'recipe-card-desktop': !(isHandset$ | async)}">
     <mat-card-header>
-      <mat-card-title><a href="{{ recipe.url }}" target="_blank">{{ recipe.title }}</a></mat-card-title>
+      <mat-card-title><a [routerLink]="['/recipes', recipe.id]">{{ recipe.title }}</a></mat-card-title>
       <mat-card-subtitle>By {{ recipe.author?.username || '-' }} ({{ recipe.created_at | date: 'mediumDate' }})</mat-card-subtitle>
     </mat-card-header>
     <img mat-card-image src="{{ recipe.image_url || '/assets/images/no-image.png' }}" alt="Photo {{ recipe.title }}">

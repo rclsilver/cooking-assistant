@@ -1,0 +1,105 @@
+.recipe {
+  display: flex;
+  flex-wrap: wrap;
+
+  & > * h3 {
+    margin: 0;
+  }
+
+  &-header {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 1em;
+    border: 1px solid rgba(0, 0, 0, 0.22);
+    border-radius: 5px;
+    background-color: #424242;
+    margin-bottom: 1em;
+
+    & > * .label {
+      font-weight: bold;
+    }
+
+    & > * .label,
+    & > * .value {
+      text-align: center;
+    }
+
+    & > .source {
+      display: inline-flex;
+      width: 100%;
+      margin-top: 1em;
+
+      & > .label {
+        margin-right: 0.5em;
+      }
+
+      & > .value > a {
+        color: #FFFFFF;
+      }
+    }
+  }
+
+  &-ingredients {
+    padding: 1em;
+    border: 1px solid rgba(0, 0, 0, 0.22);
+    border-radius: 5px;
+    background-color: #424242;
+
+    & > ul {
+      margin-bottom: 0;
+      padding-left: 1em;
+
+      & > li {
+        padding: 0.5em;
+      }
+    }
+  }
+
+  &-steps {
+    padding: 1em;
+    border: 1px solid rgba(0, 0, 0, 0.22);
+    border-radius: 5px;
+    background-color: #424242;
+
+    & > ol {
+      margin-bottom: 0;
+      padding-left: 1em;
+
+      & > li {
+        padding: 0.5em;
+        text-align: justify;
+      }
+    }
+  }
+
+  &-ingredients > ul > li > span:after {
+    content: ' ';
+  }
+
+  &.handset {
+    flex-direction: column;
+
+    & > .recipe-ingredients {
+      margin-bottom: 1em;
+    }
+  }
+
+  &.desktop {
+    flex-direction: row;
+
+    & > .recipe-header {
+      width: 100%;
+    }
+
+    & > .recipe-ingredients {
+      width: 20%;
+    }
+
+    & > .recipe-steps {
+      flex: 1 0 0;
+      margin-left: 1em;
+    }
+  }
+}

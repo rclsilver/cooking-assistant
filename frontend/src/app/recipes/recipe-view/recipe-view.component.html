@@ -1,0 +1,63 @@
+<ng-container *ngIf="recipe">
+  <div class="header">
+    <h2>{{ recipe.title }}</h2>
+    <div *ngIf="isAuthenticated$ | async">
+      <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Recipe menu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu" xPosition="before">
+        <button mat-menu-item aria-label="Schedule the recipe" (click)="scheduleRecipe()">
+          <mat-icon>calendar_today</mat-icon>
+          <span>Schedule</span>
+        </button>
+        <button *ngIf="isAdministrator$ | async" mat-menu-item color="warn" aria-label="Edit the recipe" (click)="deleteRecipe()">
+          <mat-icon>delete</mat-icon>
+          <span>Delete</span>
+        </button>
+      </mat-menu>
+    </div>
+  </div>
+  <hr>
+  <div class="recipe" [ngClass]="{ 'handset': isHandset$ | async, 'desktop': !(isHandset$ | async)}">
+    <div class="recipe-header">
+      <div class="time">
+        <div class="label" color="primary">Time</div>
+        <div class="value">-</div>
+      </div>
+      <div class="quantity">
+        <div class="label">Quantity</div>
+        <div class="value">-</div>
+      </div>
+      <div class="difficulty">
+        <div class="label">Difficulty</div>
+        <div class="value">-</div>
+      </div>
+      <div class="cost">
+        <div class="label">Cost</div>
+        <div class="value">-</div>
+      </div>
+      <div *ngIf="recipe.url" class="source">
+        <div class="label">Source</div>
+        <div class="value"><a href="{{ recipe.url }}" target="_blank">Show original page</a></div>
+      </div>
+    </div>
+    <div class="recipe-ingredients">
+      <h3>Ingredients</h3>
+      <ul>
+        <li *ngFor="let ingredient of recipe.ingredients">
+          <span *ngIf="ingredient.quantity">{{ ingredient.quantity }}</span>
+          <span *ngIf="ingredient.unit">{{ ingredient.unit.label }}</span>
+          <span *ngIf="!ingredient.quantity || ingredient.quantity <= 1 || ingredient.unit || !ingredient.ingredient.label_plural">{{ ingredient.ingredient.label }}</span>
+          <span *ngIf="ingredient.quantity && ingredient.quantity > 1 && !ingredient.unit && ingredient.ingredient.label_plural">{{ ingredient.ingredient.label_plural }}</span>
+          <span *ngIf="ingredient.optional">(optional)</span>
+        </li>
+      </ul>
+    </div>
+    <div class="recipe-steps">
+      <h3>Preparation</h3>
+      <ol>
+        <li *ngFor="let step of recipe.steps">{{ step.content }}</li>
+      </ol>
+    </div>
+  </div>
+</ng-container>
