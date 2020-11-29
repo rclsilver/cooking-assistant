@@ -1,1 +1,24 @@
-<p>recipe-list works!</p>
+<div class="header">
+  <h2>Recipes</h2>
+</div>
+<hr>
+<div class="recipe-list">
+  <mat-card *ngFor="let recipe of recipes" class="recipe-card" [ngClass]="{'recipe-card-handset': (isHandset$ | async), 'recipe-card-desktop': !(isHandset$ | async)}">
+    <mat-card-header>
+      <mat-card-title><a href="{{ recipe.url }}" target="_blank">{{ recipe.title }}</a></mat-card-title>
+      <mat-card-subtitle>By {{ recipe.author?.username || '-' }} ({{ recipe.created_at | date: 'mediumDate' }})</mat-card-subtitle>
+    </mat-card-header>
+    <img mat-card-image src="{{ recipe.image_url || '/assets/images/no-image.png' }}" alt="Photo {{ recipe.title }}">
+    <mat-card-content *ngIf="!(isHandset$ | async)">
+      <div class="duration">
+        <mat-icon>schedule</mat-icon>
+        <span>not-implemented</span>
+      </div>
+    </mat-card-content>
+    <mat-card-actions *ngIf="isAuthenticated$ | async" class="actions">
+      <button *ngIf="isAdministrator$ | async" mat-mini-fab color="warn" aria-label="Delete this recipe" (click)="deleteRecipe(recipe)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>

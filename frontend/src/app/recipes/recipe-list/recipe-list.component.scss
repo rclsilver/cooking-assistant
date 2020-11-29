@@ -1,0 +1,38 @@
+.recipe-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-content: space-around;
+  gap: 1em;
+}
+
+.recipe-card {
+  &-handset {
+    width: 100%;
+  }
+
+  &-desktop {
+    width: 400px;
+  }
+
+  & > * .duration {
+    display: flex;
+    align-items: center;
+  }
+
+  & > * .mat-card-title {
+    & > a {
+      color: #FFFFFF;
+      text-decoration: none;
+    }
+  }
+
+  & > .mat-card-actions {
+    display: flex;
+    justify-content: flex-end;
+
+    & > button {
+      margin-left: 1em;
+    }
+  }
+}
