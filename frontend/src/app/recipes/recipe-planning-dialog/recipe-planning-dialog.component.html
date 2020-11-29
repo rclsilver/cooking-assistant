@@ -1,0 +1,19 @@
+<form [formGroup]="form" (submit)="submit()">
+  <h1 mat-dialog-title>Schedule this recipe</h1>
+  <div mat-dialog-content>
+    <mat-form-field appearance="fill">
+      <mat-label>Choose a date</mat-label>
+      <input matInput formControlName="date" [matDatepicker]="picker" [min]="minDate" required>
+      <mat-error *ngIf="form.controls.date.touched && form.controls.date.invalid">
+        <span *ngIf="form.controls.date.errors?.required">This field is mandatory</span>
+        <span *ngIf="form.controls.date.errors?.server">{{ form.controls.date.errors?.server }}</span>
+      </mat-error>
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker [touchUi]="isHandset$ | async"></mat-datepicker>
+    </mat-form-field>
+  </div>
+  <div mat-dialog-actions align="center">
+    <button mat-button color="warn" type="button" (click)="cancel()">Cancel</button>
+    <button mat-button color="primary" type="submit" [disabled]="form.invalid">Schedule</button>
+  </div>
+</form>

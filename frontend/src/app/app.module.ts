@@ -13,6 +13,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthModule } from './auth/auth.module';
 import { RecipesModule } from './recipes/recipes.module';
+import { PlanningModule } from './planning/planning.module';
 import { SharedModule } from './shared/shared.module';
 
 @NgModule({
@@ -23,6 +24,7 @@ import { SharedModule } from './shared/shared.module';
     BrowserModule,
     AuthModule.forRoot(),
     RecipesModule,
+    PlanningModule,
     SharedModule,
     AppRoutingModule,
     BrowserAnimationsModule,

@@ -1,0 +1,23 @@
+<h2>Weekly planning</h2>
+<hr>
+<div *ngIf="(planning | async) as planning" class="planning">
+  <div class="header">
+    <a [routerLink]="['/planning', previousDate | async]">&lt;&lt;</a>
+    <h3>{{ planning.start_date.local().format('Y-MM-DD') }} - {{ planning.end_date.local().format('Y-MM-DD') }}</h3>
+    <a [routerLink]="['/planning', nextDate | async]">&gt;&gt;</a>
+  </div>
+  <div class="body" [ngClass]="{'column': isHandset$ | async, 'row': !(isHandset$ | async)}" layout="row">
+    <div *ngFor="let day of planning.days" flex="" class="day">
+      <div class="title">
+        {{ day.date.local().format('dddd') }}
+      </div>
+      <hr>
+      <div class="recipes">
+        <a *ngFor="let schedule of day.schedules" (click)="show(schedule)">
+          <img src="{{ schedule.recipe.image_url || '/assets/images/no-image.png' }}">
+        </a>
+        <p *ngIf="!day.schedules.length" class="no-recipe">No reciped scheduled for this day</p>
+      </div>
+    </div>
+  </div>
+</div>

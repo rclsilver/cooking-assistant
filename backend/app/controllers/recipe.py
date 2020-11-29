@@ -1,8 +1,10 @@
 import logging
 
 from app.controllers import BaseController
+from app.models.planning import RecipeSchedule
 from app.models.recipe import Recipe
 from app.parsers import get_parser
+from app.schemas.planning import PlanningCreate
 from app.schemas.recipe import RecipeImport
 from app.schemas.user import User
 from sqlalchemy.orm import Session
@@ -57,6 +59,9 @@ class RecipeController(BaseController):
         """
         Delete a recipe from database
         """
+        for schedule in recipe.schedules:
+            db.delete(schedule)
+
         db.delete(recipe)
         db.commit()
 
@@ -82,3 +87,33 @@ class RecipeController(BaseController):
             logger.exception(f'Unable to fetch {recipe.id} recipe informations')
 
         return recipe
+
+    @classmethod
+    def add_recipe_schedule(cls, recipe: Recipe, author: User, payload: PlanningCreate, db: Session) -> RecipeSchedule:
+        """
+        Schedule a recipe
+        """
+        cls._raise_if_already_exists(
+            db.query(RecipeSchedule).filter_by(recipe=recipe, date=payload.date),
+            'Recipe is already scheduled for this date',
+            'RECIPE_SCHEDULE_ALREADY_EXISTS',
+            date=payload.date
+        )
+
+        schedule = RecipeSchedule()
+        schedule.recipe_id = str(recipe.id)
+        schedule.author_id = str(author.id)
+        schedule.date = payload.date
+
+        db.add(schedule)
+        db.commit()
+
+        return schedule
+
+    @classmethod
+    def remove_recipe_schedule(cls, schedule: RecipeSchedule, db: Session) -> None:
+        """
+        Unschedule a recipe
+        """
+        db.delete(schedule)
+        db.commit()

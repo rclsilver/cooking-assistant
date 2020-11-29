@@ -1,4 +1,5 @@
 import { User } from '../auth/types';
+import { Moment } from 'moment';
 
 export type Recipe = {
   id: string | null;
@@ -13,3 +14,17 @@ export type Recipe = {
 export type RecipeImportPayload = {
   url: string;
 };
+
+export type RecipeSchedule = {
+  id: string | null;
+  created_at: string | null;
+  updated_at: string | null;
+  date: Moment;
+  recipe: Recipe;
+  author: User;
+};
+
+export type RecipeSchedulePayload = {
+  recipe: Recipe;
+  date: Moment;
+}

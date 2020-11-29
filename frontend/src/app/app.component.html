@@ -10,6 +10,7 @@
       <a *ngIf="(isAuthenticated$ | async)" mat-list-item (click)="logout()">Logout</a>
       <mat-divider></mat-divider>
       <a mat-list-item routerLink="/recipes">Recipes</a>
+      <a *ngIf="(isAuthenticated$ | async)" mat-list-item routerLink="/planning">Planning</a>
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>

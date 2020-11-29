@@ -4,7 +4,10 @@ import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ServerErrorDialogComponent } from 'src/app/shared/server-error-dialog/server-error-dialog.component';
 import { ControllerError, ValidationError } from 'src/app/shared/types';
-import { Recipe, RecipeImportPayload } from '../recipes/types';
+import { Recipe, RecipeImportPayload, RecipeSchedule, RecipeSchedulePayload } from 'src/app/recipes/types';
+import { Planning, PlanningDay } from '../planning/types';
+import * as moment from 'moment';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -69,5 +72,43 @@ export class ApiService {
 
   deleteRecipe(recipe: Recipe): Promise<null> {
     return this.http.delete<null>(`/api/recipes/${recipe.id}`).toPromise();
+  }
+
+  getPlanning(startDate: moment.Moment, endDate: moment.Moment): Promise<Planning> {
+    return this.http
+      .get<Planning>('/api/planning/', {
+        params: {
+          start_date: startDate.local().format('Y-M-D'),
+          end_date: endDate.local().format('Y-M-D')
+        }
+      })
+      .pipe(
+        map(response => {
+          response.start_date = moment(response.start_date);
+          response.end_date = moment(response.end_date);
+
+          response.days.forEach((day: PlanningDay) => {
+            day.date = moment(day.date);
+
+            day.schedules.forEach((schedule: RecipeSchedule) => {
+              schedule.date = moment(schedule.date);
+            });
+          });
+
+          return response;
+        })
+      )
+      .toPromise();
+  }
+
+  addPlanningRecipe(payload: RecipeSchedulePayload): Promise<RecipeSchedule> {
+    return this.http.post<RecipeSchedule>(`/api/recipes/${payload.recipe.id}/schedules`, {
+      date: payload.date.local().format('Y-M-D')
+    }).toPromise();
+  }
+
+  removePlanningRecipe(schedule: RecipeSchedule): Promise<null> {
+    return this.http.delete<null>(`/api/recipes/${schedule.recipe.id}/schedules/${schedule.id}`)
+      .toPromise();
   }
 }

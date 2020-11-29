@@ -27,6 +27,9 @@
       </div>
     </mat-card-content>
     <mat-card-actions *ngIf="isAuthenticated$ | async" class="actions">
+      <button *ngIf="isAuthenticated$ | async" mat-mini-fab color="primary" aria-label="Schedule the recipe" (click)="scheduleRecipe(recipe)">
+        <mat-icon>calendar_today</mat-icon>
+      </button>
       <button *ngIf="isAdministrator$ | async" mat-mini-fab color="warn" aria-label="Delete this recipe" (click)="deleteRecipe(recipe)">
         <mat-icon>delete</mat-icon>
       </button>

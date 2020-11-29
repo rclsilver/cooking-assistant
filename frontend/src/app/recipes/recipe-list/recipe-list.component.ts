@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth/auth.service';
+import { RecipePlanningDialogComponent } from 'src/app/recipes/recipe-planning-dialog/recipe-planning-dialog.component';
 import { ApiService } from 'src/app/shared/api.service';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
 import { SuccessDialogComponent } from 'src/app/shared/success-dialog/success-dialog.component';
@@ -40,6 +41,14 @@ export class RecipeListComponent implements OnInit {
     this.api.getRecipes()
       .then((recipes: Recipe[]) => this.recipes = recipes)
       .catch(this.api.handleServerError('Error while fetching recipes list'));
+  }
+
+  scheduleRecipe(recipe: Recipe): void {
+    this.dialog.open(RecipePlanningDialogComponent, {
+      data: {
+        recipe
+      }
+    });
   }
 
   deleteRecipe(recipe: Recipe): void {

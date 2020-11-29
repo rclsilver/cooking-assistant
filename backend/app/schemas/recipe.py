@@ -1,3 +1,4 @@
+import datetime
 import re
 
 from app.schemas import BaseModel, Empty
@@ -37,3 +38,12 @@ class RecipeImport(Empty):
         if not re.match(r'^https?://.+', value):
             raise ValueError('Must be a valid URL')
         return value
+
+
+class RecipeSchedule(BaseModel):
+    """
+    A recipe in a planning
+    """
+    recipe: Recipe
+    author: User
+    date: datetime.date

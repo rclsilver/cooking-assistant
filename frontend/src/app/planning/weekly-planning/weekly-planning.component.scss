@@ -1,0 +1,59 @@
+.planning {
+  & > .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    & > a {
+      color: #FFFFFF;
+      text-decoration: none;
+    }
+  }
+
+  & > .body {
+    display: flex;
+    justify-content: space-between;
+
+    &.row {
+      flex-direction: row;
+
+      & > .day {
+        width: calc(100% / 7);
+      }
+    }
+
+    &.column {
+      flex-direction: column;
+
+      & > .day {
+        margin-top: 1em;
+      }
+    }
+
+    & > .day {
+      border: 1px solid #000;
+      border-radius: 6px;
+      background-color: #424242; // TODO change to $mat-* variable
+      padding: 1em;
+
+      & > .title {
+        font-weight: bold;
+        text-align: center;
+      }
+
+      & > .recipes {
+        & > .no-recipe {
+          text-align: center;
+          font-style: italic;
+        }
+
+        & > a {
+          & > img {
+            width: 100%;
+            height: auto;
+          }
+        }
+      }
+    }
+  }
+}
