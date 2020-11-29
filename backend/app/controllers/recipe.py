@@ -3,11 +3,11 @@ import logging
 from app.controllers import BaseController
 from app.models.ingredient import Ingredient
 from app.models.planning import RecipeSchedule
-from app.models.recipe import Recipe, RecipeIngredient
+from app.models.recipe import Recipe, RecipeIngredient, RecipeStep
 from app.models.unit import Unit
 from app.parsers import get_parser
 from app.schemas.planning import PlanningCreate
-from app.schemas.recipe import RecipeImport, RecipeIngredientCreate, RecipeIngredientUpdate
+from app.schemas.recipe import RecipeImport, RecipeIngredientCreate, RecipeIngredientUpdate, RecipeStepCreate, RecipeStepUpdate
 from app.schemas.user import User
 from sqlalchemy.orm import Session
 from typing import List, Optional
@@ -63,6 +63,9 @@ class RecipeController(BaseController):
         """
         for ingredient in recipe.ingredients:
             db.delete(ingredient)
+
+        for step in recipe.steps:
+            db.delete(step)
 
         for schedule in recipe.schedules:
             db.delete(schedule)
@@ -179,4 +182,108 @@ class RecipeController(BaseController):
         Delete an ingredient from a recipe
         """
         db.delete(ingredient)
+        db.commit()
+
+    @classmethod
+    def get_recipe_step(cls, recipe: Recipe, step_id: UUID, db: Session) -> RecipeStep:
+        """
+        Get a step in a recipe
+        """
+        return cls._get(db, RecipeStep, recipe=recipe, id=step_id)
+
+    @classmethod
+    def add_recipe_step(cls, recipe: Recipe, payload: RecipeStepCreate, db: Session) -> RecipeStep:
+        """
+        Add a step in a recipe
+        """
+        step = RecipeStep()
+        step.content = payload.content
+        step.recipe_id = str(recipe.id)
+
+        if payload.order:
+            step.order = payload.order
+        else:
+            for existing_step in recipe.steps:
+                if not step.order or step.order <= existing_step.order:
+                    step.order =  existing_step.order + 1
+            if not step.order:
+                step.order = 1
+
+        # Move down all existing steps
+        for existing_step in db.query(RecipeStep).filter(
+            RecipeStep.recipe_id == str(recipe.id),
+            RecipeStep.order >= step.order
+        ).order_by(
+            RecipeStep.order.desc()
+        ).all():
+            existing_step.order += 1
+            db.add(existing_step)
+            db.flush()
+
+        db.add(step)
+        db.commit()
+
+        return step
+
+    @classmethod
+    def update_recipe_step(cls, recipe: Recipe, step: RecipeStep, payload: RecipeStepUpdate, db: Session) -> RecipeStep:
+        """
+        Update a step in a recipe
+        """
+        step.content = payload.content
+        step_order = step.order
+
+        # Define a temporary order for the step
+        step.order = 0
+        db.add(step)
+        db.flush()
+
+        # Organize other steps with the new order
+        if step_order - payload.order > 0:
+            for existing_step in db.query(RecipeStep).filter(
+                RecipeStep.recipe_id == str(recipe.id),
+                RecipeStep.order.between(payload.order, step_order)
+            ).order_by(
+                RecipeStep.order.desc()
+            ).all():
+                existing_step.order += 1
+                db.add(existing_step)
+                db.flush()
+        elif payload.order - step_order > 0:
+            for existing_step in db.query(RecipeStep).filter(
+                RecipeStep.recipe_id == str(recipe.id),
+                RecipeStep.order.between(step_order, payload.order)
+            ).order_by(
+                RecipeStep.order.asc()
+            ).all():
+                existing_step.order -= 1
+                db.add(existing_step)
+                db.flush()
+
+        step.order = payload.order
+
+        db.add(step)
+        db.commit()
+
+        return step
+
+    @classmethod
+    def delete_recipe_step(cls, recipe: Recipe, step: RecipeStep, db: Session) -> None:
+        """
+        Delete an ingredient from a recipe
+        """
+        db.delete(step)
+        db.flush()
+
+        # Move up all following steps
+        for existing_step in db.query(RecipeStep).filter(
+            RecipeStep.recipe_id == str(recipe.id),
+            RecipeStep.order > step.order
+        ).order_by(
+            RecipeStep.order.asc()
+        ).all():
+            existing_step.order -= 1
+            db.add(existing_step)
+            db.flush()
+
         db.commit()

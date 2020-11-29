@@ -39,6 +39,29 @@ class RecipeIngredientUpdate(Empty):
     unit_id: Optional[UUID]
 
 
+class RecipeStep(BaseModel):
+    """
+    A step in a recipe
+    """
+    order: int
+    content: str
+
+
+class RecipeStepCreate(Empty):
+    """
+    Step in a recipe payload schema
+    """
+    order: Optional[int]
+    content: str
+
+
+class RecipeStepUpdate(RecipeStepCreate):
+    """
+    Step in a recipe payload schema
+    """
+    order: int
+
+
 class RecipeBase(BaseModel):
     """
     Recipe base schema
@@ -48,6 +71,7 @@ class RecipeBase(BaseModel):
     url: str
     author: Optional[User]
     ingredients: List[RecipeIngredient]
+    steps: List[RecipeStep]
 
 
 class Recipe(RecipeBase):

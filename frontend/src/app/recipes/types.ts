@@ -25,6 +25,24 @@ export type RecipeIngredientUpdatePayload = {
   unit_id: string | null;
 };
 
+export type RecipeStep = {
+  id: string;
+  created_at: string;
+  updated_at: string;
+  order: number;
+  content: string;
+};
+
+export type RecipeStepCreatePayload = {
+  order: number | null;
+  content: string;
+};
+
+export type RecipeStepUpdatePayload = {
+  order: number;
+  content: string;
+};
+
 export type Recipe = {
   id: string | null;
   created_at: string | null;
@@ -34,6 +52,7 @@ export type Recipe = {
   image_url: string | null;
   author: User | null;
   ingredients: RecipeIngredient[];
+  steps: RecipeStep[];
 }
 
 export type RecipeImportPayload = {

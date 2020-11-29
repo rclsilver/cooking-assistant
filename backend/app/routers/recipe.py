@@ -5,7 +5,17 @@ from app.controllers.user import UserController
 from app.database import get_session
 from app.routers import admin_required
 from app.schemas.planning import PlanningCreate
-from app.schemas.recipe import Recipe, RecipeImport, RecipeIngredient, RecipeIngredientCreate, RecipeIngredientUpdate, RecipeSchedule
+from app.schemas.recipe import (
+    Recipe,
+    RecipeImport,
+    RecipeIngredient,
+    RecipeIngredientCreate,
+    RecipeIngredientUpdate,
+    RecipeSchedule,
+    RecipeStep,
+    RecipeStepCreate,
+    RecipeStepUpdate
+)
 from app.schemas.user import User
 from fastapi import APIRouter, BackgroundTasks, Body, Depends, Path, Response, status
 from sqlalchemy.orm import Session
@@ -150,3 +160,48 @@ async def remove_ingredient(
     recipe = RecipeController.get_recipe(recipe_id, db)
     ingredient = RecipeController.get_recipe_ingredient(recipe, ingredient_id, db)
     RecipeController.delete_recipe_ingredient(recipe, ingredient, db)
+
+
+@router.post('/{recipe_id}/steps/', response_model=RecipeStep)
+async def add_step(
+    recipe_id: UUID = Path(..., title='Recipe ID'),
+    payload: RecipeStepCreate = Body(..., title='Step payload'),
+    user: User = Depends(get_user),
+    db: Session = Depends(get_session)
+) -> RecipeStep:
+    """
+    Add a step in a recipe
+    """
+    recipe = RecipeController.get_recipe(recipe_id, db)
+    return RecipeController.add_recipe_step(recipe, payload, db)
+
+
+@router.put('/{recipe_id}/steps/{step_id}', response_model=RecipeStep)
+async def update_step(
+    recipe_id: UUID = Path(..., title='Recipe ID'),
+    step_id: UUID = Path(..., title='Step ID'),
+    payload: RecipeStepUpdate = Body(..., title='Step payload'),
+    user: User = Depends(get_user),
+    db: Session = Depends(get_session)
+) -> RecipeStep:
+    """
+    Update a step in a recipe
+    """
+    recipe = RecipeController.get_recipe(recipe_id, db)
+    step = RecipeController.get_recipe_step(recipe, step_id, db)
+    return RecipeController.update_recipe_step(recipe, step, payload, db)
+
+
+@router.delete('/{recipe_id}/steps/{step_id}', response_class=Response, status_code=status.HTTP_204_NO_CONTENT)
+async def remove_step(
+    recipe_id: UUID = Path(..., title='Recipe ID'),
+    step_id: UUID = Path(..., title='Step ID'),
+    user: User = Depends(get_user),
+    db: Session = Depends(get_session)
+) -> None:
+    """
+    Remove a step from a recipe
+    """
+    recipe = RecipeController.get_recipe(recipe_id, db)
+    step = RecipeController.get_recipe_step(recipe, step_id, db)
+    RecipeController.delete_recipe_step(recipe, step, db)
