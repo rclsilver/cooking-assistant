@@ -7,7 +7,7 @@ from app.models.recipe import Recipe, RecipeIngredient, RecipeStep
 from app.models.unit import Unit
 from app.parsers import get_parser
 from app.schemas.planning import PlanningCreate
-from app.schemas.recipe import RecipeImport, RecipeIngredientCreate, RecipeIngredientUpdate, RecipeStepCreate, RecipeStepUpdate
+from app.schemas.recipe import RecipeCreate, RecipeImport, RecipeIngredientCreate, RecipeIngredientUpdate, RecipeStepCreate, RecipeStepUpdate
 from app.schemas.user import User
 from sqlalchemy.orm import Session
 from typing import List, Optional
@@ -35,6 +35,21 @@ class RecipeController(BaseController):
         Fetch a specific recipe from database
         """
         return cls._get(db, Recipe, id=recipe_id)
+
+    @classmethod
+    def create_recipe(cls, payload: RecipeCreate, author: User, db: Session) -> Recipe:
+        """
+        Create a recipe
+        """
+        recipe = Recipe()
+        recipe.title = payload.title
+        recipe.image_url = payload.image_url
+        recipe.author_id = str(author.id)
+
+        db.add(recipe)
+        db.commit()
+
+        return recipe
 
     @classmethod
     def import_recipe(cls, payload: RecipeImport, author: User, db: Session) -> Recipe:

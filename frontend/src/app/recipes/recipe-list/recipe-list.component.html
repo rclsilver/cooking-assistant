@@ -5,6 +5,10 @@
       <mat-icon>more_vert</mat-icon>
     </button>
     <mat-menu #menu="matMenu" xPosition="before">
+      <a mat-menu-item aria-label="Create a recipe" routerLink="/recipes/new">
+        <mat-icon>add</mat-icon>
+        <span>Create</span>
+      </a>
       <a mat-menu-item aria-label="Schedule the recipe" routerLink="/recipes/import">
         <mat-icon>cloud_download</mat-icon>
         <span>Import</span>

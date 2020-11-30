@@ -1,0 +1,25 @@
+<h2>Create a recipe</h2>
+<hr>
+<form [formGroup]="form" (submit)="submit()">
+  <mat-form-field appearance="fill">
+    <mat-label>Enter the recipe title</mat-label>
+    <input matInput formControlName="title" required>
+    <mat-error *ngIf="form.controls.title.touched && form.controls.title.invalid">
+      <span *ngIf="form.controls.title.errors?.required">This field is mandatory</span>
+      <span *ngIf="form.controls.title.errors?.server">{{ form.controls.title.errors?.server }}</span>
+    </mat-error>
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Enter the recipe image URL</mat-label>
+    <input matInput formControlName="image_url" placeholder="https://..." required>
+    <mat-error *ngIf="form.controls.image_url.touched && form.controls.image_url.invalid">
+      <span *ngIf="form.controls.image_url.errors?.required">This field is mandatory</span>
+      <span *ngIf="form.controls.image_url.errors?.pattern">Invalid URL</span>
+      <span *ngIf="form.controls.image_url.errors?.server">{{ form.controls.image_url.errors?.server }}</span>
+    </mat-error>
+  </mat-form-field>
+  <div class="buttons">
+    <button mat-raised-button color="secondary" (click)="cancel()">Cancel</button>
+    <button mat-raised-button color="primary" type="submit" [disabled]="!form.valid">Create</button>
+  </div>
+</form>

@@ -8,11 +8,17 @@ import { WeeklyPlanningComponent } from './planning/weekly-planning/weekly-plann
 import { RecipeListComponent } from './recipes/recipe-list/recipe-list.component';
 import { UnitListComponent } from './recipes/unit-list/unit-list.component';
 import { IngredientListComponent } from './recipes/ingredient-list/ingredient-list.component';
+import { RecipeCreateFormComponent } from 'src/app/recipes/recipe-create-form/recipe-create-form.component';
 
 const routes: Routes = [
   {
     path: 'recipes',
     component: RecipeListComponent,
+  },
+  {
+    path: 'recipes/new',
+    component: RecipeCreateFormComponent,
+    canActivate: [RequireUserGuard]
   },
   {
     path: 'recipes/import',

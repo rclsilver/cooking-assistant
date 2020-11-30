@@ -19,10 +19,12 @@ import { UnitFormComponent } from './unit-form/unit-form.component';
 import { IngredientListComponent } from './ingredient-list/ingredient-list.component';
 import { IngredientFormComponent } from './ingredient-form/ingredient-form.component';
 import { RecipeViewComponent } from './recipe-view/recipe-view.component';
+import { RecipeCreateFormComponent } from './recipe-create-form/recipe-create-form.component';
 
 @NgModule({
   declarations: [
     RecipeListComponent,
+    RecipeCreateFormComponent,
     RecipeImportFormComponent,
     RecipePlanningDialogComponent,
     UnitListComponent,
@@ -30,6 +32,7 @@ import { RecipeViewComponent } from './recipe-view/recipe-view.component';
     IngredientListComponent,
     IngredientFormComponent,
     RecipeViewComponent,
+    RecipeCreateFormComponent,
   ],
   imports: [
     CommonModule,

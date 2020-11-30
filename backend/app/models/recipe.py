@@ -10,7 +10,7 @@ class Recipe(Base):
     """
     title = Column(String, nullable=True)
     image_url = Column(String, nullable=True)
-    url = Column(String, unique=True, nullable=False)
+    url = Column(String, nullable=True)
 
     # Author relation
     author_id = Column(UUID, ForeignKey('user.id'), nullable=True)

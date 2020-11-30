@@ -7,6 +7,7 @@ from app.routers import admin_required
 from app.schemas.planning import PlanningCreate
 from app.schemas.recipe import (
     Recipe,
+    RecipeCreate,
     RecipeImport,
     RecipeIngredient,
     RecipeIngredientCreate,
@@ -45,6 +46,18 @@ async def get_recipe(
     Get a recipe
     """
     return RecipeController.get_recipe(recipe_id, db)
+
+
+@router.post('/', response_model=Recipe)
+async def create_recipe(
+    payload: RecipeCreate = Body(..., title='Payload'),
+    user: User = Depends(get_user),
+    db: Session = Depends(get_session)
+) -> Recipe:
+    """
+    Create a recipe
+    """
+    return RecipeController.create_recipe(payload, user, db)
 
 
 @router.post('/import', response_model=Recipe)

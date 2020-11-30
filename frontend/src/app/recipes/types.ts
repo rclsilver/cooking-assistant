@@ -55,6 +55,11 @@ export type Recipe = {
   steps: RecipeStep[];
 }
 
+export type RecipeCreatePayload = {
+  title: string;
+  image_url: string;
+};
+
 export type RecipeImportPayload = {
   url: string;
 };

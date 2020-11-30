@@ -68,7 +68,7 @@ class RecipeBase(BaseModel):
     """
     title: Optional[str]
     image_url: Optional[str]
-    url: str
+    url: Optional[str]
     author: Optional[User]
     ingredients: List[RecipeIngredient]
     steps: List[RecipeStep]
@@ -79,6 +79,23 @@ class Recipe(RecipeBase):
     Recipe full schema
     """
     pass
+
+
+class RecipeCreate(Empty):
+    """
+    Recipe create payload schema
+    """
+    title: str
+    image_url: str
+
+    @validator('title')
+    def title_must_be_valid(cls, value: str):
+        """
+        Validate title field value
+        """
+        if not value.strip():
+            raise ValueError('Title cannot be empty')
+        return value.strip()
 
 
 class RecipeImport(Empty):
