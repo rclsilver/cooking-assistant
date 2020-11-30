@@ -111,3 +111,4 @@ from app.parsers.cuisine_actuelle import CuisineActuelleParser
 from app.parsers.marmiton import MarmitonParser
 from app.parsers.un_jour_une_recette import UnJourUneRecetteParser
 from app.parsers.envie_de_bien_manger import EnvieDeBienMangerParser
+from app.parsers.sept_cent_cinquante_grammes import SeptCentCinquanteGrammesParser
