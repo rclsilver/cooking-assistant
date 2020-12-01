@@ -98,6 +98,13 @@ class RecipeCreate(Empty):
         return value.strip()
 
 
+class RecipeUpdate(RecipeCreate):
+    """
+    Recipe update payload schema
+    """
+    pass
+
+
 class RecipeImport(Empty):
     """
     Recipe import payload schema

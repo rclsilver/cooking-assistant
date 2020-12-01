@@ -60,6 +60,11 @@ export type RecipeCreatePayload = {
   image_url: string;
 };
 
+export type RecipeUpdatePayload = {
+  title: string;
+  image_url: string;
+};
+
 export type RecipeImportPayload = {
   url: string;
 };

@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -20,6 +21,10 @@ import { IngredientListComponent } from './ingredient-list/ingredient-list.compo
 import { IngredientFormComponent } from './ingredient-form/ingredient-form.component';
 import { RecipeViewComponent } from './recipe-view/recipe-view.component';
 import { RecipeCreateFormComponent } from './recipe-create-form/recipe-create-form.component';
+import { RecipeStepFormDialogComponent } from './recipe-step-form-dialog/recipe-step-form-dialog.component';
+import { RecipeIngredientFormDialogComponent } from './recipe-ingredient-form-dialog/recipe-ingredient-form-dialog.component';
+import { MatSelectModule } from '@angular/material/select';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
   declarations: [
@@ -33,10 +38,13 @@ import { RecipeCreateFormComponent } from './recipe-create-form/recipe-create-fo
     IngredientFormComponent,
     RecipeViewComponent,
     RecipeCreateFormComponent,
+    RecipeStepFormDialogComponent,
+    RecipeIngredientFormDialogComponent,
   ],
   imports: [
     CommonModule,
     RouterModule,
+    DragDropModule,
     MatCardModule,
     MatIconModule,
     MatButtonModule,
@@ -47,7 +55,9 @@ import { RecipeCreateFormComponent } from './recipe-create-form/recipe-create-fo
     MatMomentDateModule,
     MatTableModule,
     MatMenuModule,
+    MatSelectModule,
+    MatCheckboxModule,
     ReactiveFormsModule,
   ],
 })
-export class RecipesModule { }
+export class RecipesModule {}

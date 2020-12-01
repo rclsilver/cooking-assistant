@@ -1,0 +1,41 @@
+<form [formGroup]="form" (submit)="submit()">
+  <h1 mat-dialog-title>
+    <ng-container *ngIf="!data.ingredient">Add an ingredient</ng-container>
+    <ng-container *ngIf="data.ingredient">Update an ingredient</ng-container>
+  </h1>
+  <div mat-dialog-content class="content">
+    <mat-form-field appearance="fill">
+      <mat-label>Ingredient</mat-label>
+      <mat-select formControlName="ingredient_id" [required]="!data.ingredient" [disabled]="data.ingredient !== null">
+        <mat-option *ngFor="let ingredient of ingredients" value="{{ ingredient.id }}">{{ ingredient.label }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="form.controls.ingredient_id.touched && form.controls.ingredient_id.invalid">
+        <span *ngIf="form.controls.ingredient_id.errors?.required">This field is mandatory</span>
+        <span *ngIf="form.controls.ingredient_id.errors?.server">{{ form.controls.ingredient_id.errors?.server }}</span>
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Quantity</mat-label>
+      <input matInput formControlName="quantity" type="number">
+      <mat-error *ngIf="form.controls.quantity.touched && form.controls.quantity.invalid">
+        <span *ngIf="form.controls.quantity.errors?.server">{{ form.controls.quantity.errors?.server }}</span>
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Unit</mat-label>
+      <mat-select formControlName="unit_id">
+        <mat-option>--</mat-option>
+        <mat-option *ngFor="let unit of units" value="{{ unit.id }}">{{ unit.label }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="form.controls.unit_id.touched && form.controls.unit_id.invalid">
+        <span *ngIf="form.controls.unit_id.errors?.required">This field is mandatory</span>
+        <span *ngIf="form.controls.unit_id.errors?.server">{{ form.controls.unit_id.errors?.server }}</span>
+      </mat-error>
+    </mat-form-field>
+    <mat-checkbox formControlName="optional">Optional ingredient</mat-checkbox>
+  </div>
+  <div mat-dialog-actions align="center">
+    <button mat-button color="warn" type="button" (click)="cancel()">Cancel</button>
+    <button mat-button color="primary" [disabled]="form.invalid">Submit</button>
+  </div>
+</form>

@@ -4,7 +4,7 @@ import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ServerErrorDialogComponent } from 'src/app/shared/server-error-dialog/server-error-dialog.component';
 import { ControllerError, ValidationError } from 'src/app/shared/types';
-import { Recipe, RecipeCreatePayload, RecipeImportPayload, RecipeStepCreatePayload, RecipeStep, RecipeStepUpdatePayload, RecipeIngredientCreatePayload, RecipeIngredient, RecipeIngredientUpdatePayload, RecipeSchedule, RecipeSchedulePayload, Unit, UnitPayload, Ingredient, IngredientPayload } from 'src/app/recipes/types';
+import { Recipe, RecipeCreatePayload, RecipeImportPayload, RecipeUpdatePayload, RecipeStepCreatePayload, RecipeStep, RecipeStepUpdatePayload, RecipeIngredientCreatePayload, RecipeIngredient, RecipeIngredientUpdatePayload, RecipeSchedule, RecipeSchedulePayload, Unit, UnitPayload, Ingredient, IngredientPayload } from 'src/app/recipes/types';
 import { Planning, PlanningDay } from '../planning/types';
 import * as moment from 'moment';
 import { map } from 'rxjs/operators';
@@ -72,6 +72,10 @@ export class ApiService {
 
   importRecipe(payload: RecipeImportPayload): Promise<Recipe> {
     return this.http.post<Recipe>('/api/recipes/import', payload).toPromise();
+  }
+
+  updateRecipe(recipe: Recipe, payload: RecipeUpdatePayload): Promise<Recipe> {
+    return this.http.put<Recipe>(`/api/recipes/${recipe.id}`, payload).toPromise();
   }
 
   deleteRecipe(recipe: Recipe): Promise<null> {

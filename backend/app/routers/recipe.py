@@ -15,7 +15,8 @@ from app.schemas.recipe import (
     RecipeSchedule,
     RecipeStep,
     RecipeStepCreate,
-    RecipeStepUpdate
+    RecipeStepUpdate,
+    RecipeUpdate
 )
 from app.schemas.user import User
 from fastapi import APIRouter, BackgroundTasks, Body, Depends, Path, Response, status
@@ -73,6 +74,20 @@ async def import_recipe(
     recipe = RecipeController.import_recipe(payload, user, db)
     background_tasks.add_task(RecipeController.fetch_recipe_informations, recipe, db)
     return recipe
+
+
+@router.put('/{recipe_id}', response_model=Recipe)
+async def update_recipe(
+    recipe_id: UUID = Path(..., title='Recipe ID'),
+    payload: RecipeUpdate = Body(..., title='Recipe payload'),
+    user: User = Depends(get_user),
+    db: Session = Depends(get_session)
+) -> Recipe:
+    """
+    Update a recipe
+    """
+    recipe = RecipeController.get_recipe(recipe_id, db)
+    return RecipeController.update_recipe(recipe, payload, db)
 
 
 @router.delete('/{recipe_id}', response_class=Response, status_code=status.HTTP_204_NO_CONTENT)

@@ -7,7 +7,7 @@ from app.models.recipe import Recipe, RecipeIngredient, RecipeStep
 from app.models.unit import Unit
 from app.parsers import get_parser
 from app.schemas.planning import PlanningCreate
-from app.schemas.recipe import RecipeCreate, RecipeImport, RecipeIngredientCreate, RecipeIngredientUpdate, RecipeStepCreate, RecipeStepUpdate
+from app.schemas.recipe import RecipeCreate, RecipeImport, RecipeIngredientCreate, RecipeIngredientUpdate, RecipeStepCreate, RecipeStepUpdate, RecipeUpdate
 from app.schemas.user import User
 from sqlalchemy.orm import Session
 from typing import List, Optional
@@ -65,6 +65,19 @@ class RecipeController(BaseController):
         recipe = Recipe()
         recipe.url = payload.url
         recipe.author_id = str(author.id)
+
+        db.add(recipe)
+        db.commit()
+
+        return recipe
+
+    @classmethod
+    def update_recipe(cls, recipe: Recipe, payload: RecipeUpdate, db: Session) -> Recipe:
+        """
+        Update a recipe
+        """
+        recipe.title = payload.title
+        recipe.image_url = payload.image_url
 
         db.add(recipe)
         db.commit()
